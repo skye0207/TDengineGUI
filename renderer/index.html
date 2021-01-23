@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TDengine</title>
+    <link rel="stylesheet" href="../node_modules/element-ui/lib/theme-chalk/index.css">
+  </head>
+  <body>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/element-ui/lib/index.js"></script>
+    <div id="app">
+      <el-button @click="visible = true">Button</el-button>
+      <el-dialog :visible.sync="visible" title="Hello world">
+        <p>Try Element</p>
+      </el-dialog>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data: function() {
+          return { visible: false }
+        }
+      })
+    </script>
+    <script>
+        require('./index.js')
+    </script>
+  </body>
+</html>
