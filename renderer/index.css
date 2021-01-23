@@ -1,0 +1,28 @@
+
+html, body, div {
+    margin: 0;
+    padding: 0;
+}
+
+.app{
+    height: 100%;
+}
+
+.el-container{
+    height: 100%;
+}
+
+.el-aside {
+    text-align: center;
+    border-right: 1px solid #efefef;
+    padding: 0 10px;
+}
+
+.linkBtn{
+    width: 100%;
+    margin-top: 15px;
+}
+
+.linkformstyle{
+    margin: 0 10px;
+}
