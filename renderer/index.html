@@ -14,6 +14,7 @@
           <el-row>
             <el-button class="linkBtn" @click="dialogVisible = true" type="primary" size="small" plain>新建连接</el-button>
           </el-row>
+
           <el-dialog :visible.sync="dialogVisible" title="新建连接">
             <el-form :model="linkForm" class="linkformstyle">
               <el-form-item label="Host" :label-width="formLabelWidth">
@@ -35,32 +36,12 @@
             </div>
           </el-dialog>
 
+          <el-tree :data="DBs" @node-click="handleDBClick"></el-tree>
+
         </el-aside>
         <el-main>Main</el-main>
       </el-container>
     </div>
-    <script>
-      new Vue({
-        el: '#app',
-        data: function() {
-          return { 
-            dialogVisible: false,
-            linkForm: {
-              host:"",
-              port:"",
-              user:"",
-              password:"",
-            },
-            formLabelWidth: '80px'
-          }
-        },
-        methods: {
-          postLinkForm: function (event) { 
-            alert(this.linkForm.host)
-          }
-        }
-      })
-    </script>
     <script>
         require('./index.js')
     </script>
