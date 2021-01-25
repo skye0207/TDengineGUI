@@ -17,6 +17,7 @@ module.exports = class TaosRestful {
             password: this.password
             }
         })
+        
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
