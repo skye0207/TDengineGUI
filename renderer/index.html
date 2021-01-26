@@ -9,38 +9,86 @@
     <script src="../node_modules/vue/dist/vue.js"></script>
     <script src="../node_modules/element-ui/lib/index.js"></script>
     <div id="app">
-      <el-container>
-        <el-aside width="200px">
-          <el-row>
-            <el-button class="linkBtn" @click="dialogVisible = true" type="primary" size="small" plain>新建连接</el-button>
-          </el-row>
 
-          <el-dialog :visible.sync="dialogVisible" title="新建连接">
-            <el-form :model="linkForm" class="linkformstyle">
-              <el-form-item label="Host" :label-width="formLabelWidth">
-                <el-input v-model="linkForm.host" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="Port" :label-width="formLabelWidth">
-                <el-input v-model="linkForm.port" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="User" :label-width="formLabelWidth">
-                <el-input v-model="linkForm.user" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="Password" :label-width="formLabelWidth">
-                <el-input v-model="linkForm.password" autocomplete="off"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false" size="medium">取 消</el-button>
-              <el-button type="primary" @click="postLinkForm" size="medium">确 定</el-button>
-            </div>
-          </el-dialog>
-
-          <el-tree :data="DBs" @node-click="handleDBClick"></el-tree>
-
-        </el-aside>
-        <el-main>Main</el-main>
+     
+      <!-- 选择数据库 -->
+      </el-button>
+      <el-drawer
+        title="数据库"
+        :visible.sync="drawer"
+        direction="ltr">
+        <el-row>
+          <el-button class="linkBtn" @click="dialogVisible = true" size="small" type="primary" plain>新建连接</el-button>
+        </el-row>   
+        <el-menu
+        default-active="1"
+        class="el-menu-vertical-demo">
+        <el-menu-item index="1">
+          <span slot="title">数据库1</span>
+        </el-menu-item>
+        <el-menu-item index="2">
+          <span slot="title">数据库2</span>
+        </el-menu-item>
+        <el-menu-item index="3">
+          <span slot="title">数据库3</span>
+        </el-menu-item>
+        <el-menu-item index="4">
+          <span slot="title">数据库4</span>
+        </el-menu-item>
+        </el-menu>
+      </el-drawer>
+      <el-dialog :visible.sync="dialogVisible" title="新建连接">
+        <el-form :model="linkForm" class="linkformstyle">
+          <el-form-item label="名称" :label-width="formLabelWidth">
+            <el-input v-model="linkForm.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Host" :label-width="formLabelWidth">
+            <el-input v-model="linkForm.host" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Port" :label-width="formLabelWidth">
+            <el-input v-model="linkForm.port" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="User" :label-width="formLabelWidth">
+            <el-input v-model="linkForm.user" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Password" :label-width="formLabelWidth">
+            <el-input v-model="linkForm.password" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false" size="medium">取 消</el-button>
+          <el-button type="primary" @click="postLinkForm" size="medium">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-container class="main">
+        <el-container class="mainContent">
+          <el-tabs type="border-card" class="mainTab">
+            <el-tab-pane label="超级表" class="tablePage">
+              <el-container class="tableWrapper">
+                <el-aside class="mainAside" width="200px">
+                aside
+                </el-aside>
+                <el-main>Main</el-main>
+              </el-container>
+            </el-tab-pane>
+            <el-tab-pane label="表" class="tablePage">
+              <el-container class="tableWrapper">
+                <el-aside class="mainAside" width="200px">
+                 aside
+                </el-aside>
+                <el-main>Main</el-main>
+              </el-container>
+            </el-tab-pane>
+            <el-tab-pane label="控制台">控制台</el-tab-pane>
+            <el-tab-pane label="数据库属性">数据库属性</el-tab-pane>
+          </el-tabs>
+          
+        </el-container>
+         <el-footer>      
+           <el-button @click="drawer = true" type="text" size="small">切换数据库</el-button>
+        </el-footer>
       </el-container>
+
     </div>
     <script>
         require('./index.js')

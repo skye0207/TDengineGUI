@@ -8,19 +8,59 @@ html, body, div {
     height: 100%;
 }
 
-.el-container{
+.el-drawer {
+    padding: 0 20px;
+    width: 150px;
+}
+
+.linkBtn{
+    width: 90%;
+}
+
+.el-menu{
+    border: none;
+    margin-top: 20px;
+    width: 90%;
+}
+
+.el-dialog {
+    z-index: 1000;
+}
+.main{
+    height: 100%;
+}
+.mainContent{
+    height: 100%;
+}
+
+.tablePage{
+    height: 90%;
+}
+
+.mainTab{
+    width: 100%;
+    border: none;
+    box-shadow: none;
+}
+.tableWrapper{
     height: 100%;
 }
 
 .el-aside {
-    text-align: center;
+    /* text-align: center; */
     border-right: 1px solid #efefef;
-    padding: 0 10px;
 }
 
-.linkBtn{
-    width: 100%;
-    margin-top: 15px;
+.el-main {
+    padding-top: 0;
+}
+
+.el-footer {
+    border-top: 1px solid #efefef;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    height: 35px !important;
 }
 
 .linkformstyle{
