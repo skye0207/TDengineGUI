@@ -66,3 +66,32 @@ html, body, div {
 .linkformstyle{
     margin: 0 10px;
 }
+
+.icon{
+    height: 12px;
+    width: 12px;
+    position: relative;
+    top: 1px;
+}
+
+.icon1{
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top: 2px;
+}
+.switchBtn{
+    position: relative;
+    bottom: 1px;
+}
+
+.footTextWrapper{
+    margin-left: 10px;
+    
+}
+
+.footText{
+    margin-left: 10px;
+    font-size: 13px;
+    color: #444;
+}
