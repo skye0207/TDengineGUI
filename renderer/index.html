@@ -21,24 +21,16 @@
           <el-button class="linkBtn" @click="dialogVisible = true" size="small" type="primary" plain>新建连接</el-button>
         </el-row>   
         <el-menu
-        default-active="1"
         class="el-menu-vertical-demo">
-        <el-submenu index="1">
+        <el-submenu :index="String(index)" :key="link.name" v-for="(link, index) in links">
           <template slot="title">
-            <span>连接1</span>
+            <span>{{link.name}}</span>
           </template>
-          <el-menu-item index="1-1">数据库1</el-menu-item>
-          <el-menu-item index="1-2">数据库2</el-menu-item>
-          <el-menu-item index="1-3">数据库3</el-menu-item>
-         </el-submenu>
-        <el-menu-item index="2">
-          <span slot="title">连接2</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <span slot="title">连接3</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <span slot="title">连接4</span>
+          <el-menu-item  :key="db.name" v-for="(db, index) in link.dbs" >
+            <img class="icon11" src="./img/database.png">
+            {{db.name}}
+          </el-menu-item>
+        </el-submenu>
         </el-menu-item>
         </el-menu>
       </el-drawer>
@@ -88,14 +80,14 @@
                       <span>表名</span>
                       <div class="iconWrapper"> 
                         
-                        <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./search_.png">
-                        <img class="icon1" v-else src="./search.png" @mouseleave="searchIcon = true">
-                        <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./fresh_.png">
-                        <img class="icon1" v-else src="./fresh.png" @mouseleave="freshIcon = true">
+                        <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
+                        <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
+                        <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
+                        <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
                       </div>
                     </template>
                     <template slot-scope="scope">
-                      <img class="icon1" src="./file.png">
+                      <img class="icon1" src="./img/file.png">
                       <span style="margin-left: 10px">{{ scope.row.date }}</span>
                     </template>
                     
@@ -138,7 +130,7 @@
                     label="表名"
                     width="180">
                     <template slot-scope="scope">
-                      <img class="icon1" src="./file.png">
+                      <img class="icon1" src="./img/file.png">
                       <span style="margin-left: 10px">{{ scope.row.date }}</span>
                     </template>
                   </el-table-column>
@@ -176,7 +168,7 @@
          <el-footer> 
           
            <el-button class="switchBtn" @click="drawer = true" type="text" size="small">
-             <img class="icon" src="./switch.png" />
+             <img class="icon" src="./img/switch.png" />
             切换</el-button>
             <div class="footTextWrapper">
 

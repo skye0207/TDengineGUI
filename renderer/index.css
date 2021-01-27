@@ -81,6 +81,15 @@ html, body, div {
     top: 2px;
     cursor: pointer;
 }
+
+.icon11{
+    height: 16px;
+    width: 16px;
+    position: relative;
+    bottom: 1px;
+    right: 8px;
+}
+
 .switchBtn{
     position: relative;
     bottom: 1px;

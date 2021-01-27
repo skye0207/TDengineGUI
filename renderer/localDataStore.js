@@ -10,7 +10,8 @@ module.exports = {
     },
 
     setLinks(links) {
-        links = JSON.stringify(links);
+        console.log(links)
+        links = JSON.stringify(links); //将json数据转换为字符串存储
         return localStorage.setItem('links', links);
     },
 
@@ -18,9 +19,19 @@ module.exports = {
         return localStorage.getItem('theLink')? JSON.parse(theLink) : {};
     },
 
-    setTheLink() {
-        theLink = JSON.stringify(theLink);
-        return localStorage.setItem('theLink', theLink);
+    setTheLink(theLink) {
+        //保存一个连接，如果本地就存了，更新，没存新增
+        let links = this.getLinks()
+        for(let link of links){
+            if(theLink.host == link.host && theLink.port == link.port){
+                //更新
+                link = theLink
+                return this.setLinks(links)
+            }
+        }
+        //新增
+        links.push(theLink)       
+        return this.setLinks(links)
     },
 
     // addLink(name,host,port,data) {
