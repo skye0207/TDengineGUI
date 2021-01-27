@@ -79,6 +79,7 @@ html, body, div {
     width: 16px;
     position: relative;
     top: 2px;
+    cursor: pointer;
 }
 .switchBtn{
     position: relative;
@@ -94,4 +95,9 @@ html, body, div {
     margin-left: 10px;
     font-size: 13px;
     color: #444;
+}
+
+.iconWrapper{
+    display: inline;
+    margin-left: 50px;
 }

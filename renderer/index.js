@@ -1,5 +1,8 @@
 const TaosRestful = require('./taosrestful.js')
 
+const storage = require('./localDataStore.js')
+
+
 new Vue({
     el: '#app',
     data: function() {
@@ -7,11 +10,14 @@ new Vue({
         drawer: false,
         dialogVisible: false,
         linkForm: {
+          name:"",
           host:"",
           port:"",
           user:"",
           password:"",
         },
+        searchIcon: true,
+        freshIcon: true,
         formLabelWidth: '80px',
         tableData: [{
           date: '2016-05-02',
@@ -34,11 +40,20 @@ new Vue({
     },
     methods: {
       postLinkForm: function (event) { 
-        var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
+       
+        //新建连接，先连接，如果成功了，更新本地连接缓存
+        //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
+        var tr = new TaosRestful(this.linkForm.host,this.linkForm.port,this.linkForm.user,this.linkForm.password)
         tr.showDatabases().then(data =>{
             console.log(data)
             //处理返回的数据库数据
-            const DBs = []
+            if(data.res){
+              //连接成功，保存到本地
+
+              
+            } else {
+              //连接失败
+            }
             
         }
         )
@@ -48,4 +63,5 @@ new Vue({
       }
     }
   })
+
 

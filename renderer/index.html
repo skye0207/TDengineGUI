@@ -78,14 +78,32 @@
                   <el-table-column
                     label="表名"
                     width="180">
+                    <!-- <template slot="header" slot-scope="scope">
+                      <el-input
+                        v-model="search"
+                        size="mini"
+                        placeholder="表名"/>
+                    </template> -->
+                    <template slot="header" slot-scope="scope">   
+                      <span>表名</span>
+                      <div class="iconWrapper"> 
+                        
+                        <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./search_.png">
+                        <img class="icon1" v-else src="./search.png" @mouseleave="searchIcon = true">
+                        <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./fresh_.png">
+                        <img class="icon1" v-else src="./fresh.png" @mouseleave="freshIcon = true">
+                      </div>
+                    </template>
                     <template slot-scope="scope">
                       <img class="icon1" src="./file.png">
                       <span style="margin-left: 10px">{{ scope.row.date }}</span>
                     </template>
+                    
                   </el-table-column>
                   </el-table>
                 </el-aside>
                 <el-main>
+
                   <el-table
                     size="mini"
                     :data="tableData"

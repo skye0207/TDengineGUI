@@ -34,8 +34,9 @@ module.exports = class TaosRestful {
 
    }
    showDatabases(){
-    return this.sendRequest('SHOW DATABASES')
+        return this.sendRequest('SHOW DATABASES')
    }
+   //创建新的数据库
    createDatabase(dbName,safe=true,keep= null,update=false,comp=null,replica=null,quorum=null,blocks=null){
         let sqlStr = 'CREATE DATABASE '
         if(safe){
@@ -64,28 +65,28 @@ module.exports = class TaosRestful {
         // console.log(sqlStr)
         return this.sendRequest(sqlStr)
    }
-
+   
    alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
-    let sqlStr = 'ALTER DATABASE '
-    sqlStr += dbName
-    if(keep != null){
-        sqlStr += ` KEEP ${keep}`
+        let sqlStr = 'ALTER DATABASE '
+        sqlStr += dbName
+        if(keep != null){
+            sqlStr += ` KEEP ${keep}`
+        }
+        if(comp != null){
+            sqlStr += ` COMP ${comp}`
+        }
+        if(replica != null){
+            sqlStr += ` REPLICA ${replica}`
+        }
+        if(quorum != null){
+            sqlStr += ` QUORUM ${quorum}`
+        }
+        if(blocks != null){
+            sqlStr += ` BLOCKS ${blocks}`
+        }
+        // console.log(sqlStr)
+        return this.sendRequest(sqlStr)
     }
-    if(comp != null){
-        sqlStr += ` COMP ${comp}`
-    }
-    if(replica != null){
-        sqlStr += ` REPLICA ${replica}`
-    }
-    if(quorum != null){
-        sqlStr += ` QUORUM ${quorum}`
-    }
-    if(blocks != null){
-        sqlStr += ` BLOCKS ${blocks}`
-    }
-    // console.log(sqlStr)
-    return this.sendRequest(sqlStr)
-}
    useDatabase(dbName){
     this.database = dbName
    }
@@ -117,6 +118,7 @@ module.exports = class TaosRestful {
     // console.log(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})` )
     return this.sendRequest(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})`)
    }
+   //查询数据
    selectData(tableName,fields=null,where=null,limit =null,offset = null,desc =null,dbName=null){
     let dbN = dbName ? dbName : this.database
     let sqlStr = 'SELECT '
