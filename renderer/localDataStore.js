@@ -10,7 +10,6 @@ module.exports = {
     },
 
     setLinks(links) {
-        console.log(links)
         links = JSON.stringify(links); //将json数据转换为字符串存储
         return localStorage.setItem('links', links);
     },
@@ -22,10 +21,10 @@ module.exports = {
     setTheLink(theLink) {
         //保存一个连接，如果本地就存了，更新，没存新增
         let links = this.getLinks()
-        for(let link of links){
-            if(theLink.host == link.host && theLink.port == link.port){
+        for(let i=0; i<links.length;i++){
+            if(theLink.host == links[i].host && theLink.port == links[i].port){
                 //更新
-                link = theLink
+                links[i] = theLink
                 return this.setLinks(links)
             }
         }

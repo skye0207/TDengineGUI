@@ -71,6 +71,8 @@ new Vue({
                 user:"",
                 password:"",
               }
+              //更新连接列表
+              this.links = storage.getLinks()
             } else {
               //连接失败
             }
