@@ -2,12 +2,13 @@
 const axios = require('axios')
 
 module.exports = class TaosRestful {
-   constructor(ip='localhost', port='6041',user='root',password="taosdata") {
+   constructor(ip='localhost', port='6041',user='root',password="taosdata",timeout=0) {
        this.ip = ip
        this.port = port
        this.user = user
        this.password = password
-       this.database = 'demo'
+       this.database = 'log'
+       this.timeout = timeout * 1000
    }
    async sendRequest(sqlStr){
     try {   
@@ -15,9 +16,10 @@ module.exports = class TaosRestful {
             auth: {
             username: this.user,
             password: this.password
-            }
+            },
+            timeout: this.timeout
         })
-        
+
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
@@ -29,12 +31,28 @@ module.exports = class TaosRestful {
             return {'res':false,'msg':res.data.desc,'code':res.data.code}
         }
     } catch (err) {
-        return {'res':false,'msg':err.response.data.desc,'code':err.response.data.code}
+        if (err.response){
+            return {'res':false,'msg':err.response.data.desc,'code':err.response.data.code}
+        }else{
+            return {'res':false,'msg':'connect error','code':-1}
+        }
+        
     }
 
    }
    showDatabases(){
         return this.sendRequest('SHOW DATABASES')
+   }
+   testConnect(){
+        return this.sendRequest('SHOW DATABASES').then(a =>
+            {
+                if (a.res === false && a.code === -1){
+                    return false
+                }else{
+                    return true
+                }
+            }
+        )
    }
    //创建新的数据库
    createDatabase(dbName,safe=true,keep= null,update=false,comp=null,replica=null,quorum=null,blocks=null){
