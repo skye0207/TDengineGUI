@@ -15,10 +15,13 @@ module.exports = {
     },
 
     getTheLink() {
-        return localStorage.getItem('theLink')? JSON.parse(theLink) : {};
+        let theLink = localStorage.getItem('theLink');
+        theLink = theLink? JSON.parse(theLink) : {};
+        return theLink
     },
 
     setTheLink(theLink) {
+        localStorage.setItem('theLink', JSON.stringify(theLink));
         //保存一个连接，如果本地就存了，更新，没存新增
         let links = this.getLinks()
         for(let i=0; i<links.length;i++){
@@ -31,6 +34,14 @@ module.exports = {
         //新增
         links.push(theLink)       
         return this.setLinks(links)
+    },
+
+    setTheDB(DBName){
+        localStorage.setItem('theDB', DBName);
+    },
+
+    getTheDB() {
+        return localStorage.getItem('theDB')?  localStorage.getItem('theDB') : "";
     },
 
     // addLink(name,host,port,data) {
