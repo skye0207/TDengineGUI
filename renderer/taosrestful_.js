@@ -18,7 +18,6 @@ module.exports = {
             },
             timeout: payload.timeout
         })
-        console.log(res)
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
@@ -117,9 +116,8 @@ module.exports = {
    showTables(dbName, payload){
     return this.sendRequest(`SHOW ${dbName}.TABLES`, payload)
    },
-   disTable(tableName,dbName=null){
-    let dbN = dbName ? dbName : this.database
-    return this.sendRequest(`DESCRIBE ${dbN}.${tableName}`)
+   disTable(tableName,dbName, payload){
+    return this.sendRequest(`DESCRIBE ${dbName}.${tableName}`, payload )
    },
 
    insertData(tableName,data,dbName=null){
@@ -133,8 +131,37 @@ module.exports = {
     // console.log(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})` )
     return this.sendRequest(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})`)
    },
+   timeWhere(primaryKey,where,startTime,endTime){
+    where = where || ''
+    if(where){
+        where += startTime? ` and ${primaryKey} > '${startTime}' ` : ''
+        if(where){
+            where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
+        }else{
+            where += endTime? `${primaryKey} < '${endTime}' ` : ''
+        }
+    }else{
+        where += startTime? `${primaryKey} > '${startTime}' ` : ''
+        if(where){
+            where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
+        }else{
+            where += endTime? `${primaryKey} < '${endTime}' ` : ''
+        }
+    }
+    return where
+   },
    //查询数据
-   selectData(tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null){
+   selectData(tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null){
+    return this.disTable(tableName,dbName, payload).then(res=>{
+        let primaryKey ='ts'
+        if(res.res && res.data.length>0){
+            primaryKey = res.data[0].Field
+        }else{
+            return {'res':false,'msg':'distable error','code':99}
+        }
+
+        where = this.timeWhere(primaryKey,where,startTime,endTime)
+        
         let sqlStr = 'SELECT '
         let fieldStr= '*'
         if(fields && fields.length>0){
@@ -151,15 +178,45 @@ module.exports = {
         if(desc != null){
             sqlStr +=` ORDER BY ${desc} DESC `
         }
+
         if(limit != null){
             sqlStr +=` LIMIT ${limit} `
         }
         if(offset != null){
             sqlStr +=` OFFSET ${offset} `
         }
-        return this.sendRequest(sqlStr, payload)
+
+        if(limit != null){
+            return this.sendRequest(sqlStr, payload).then(res=>{
+                return this.countDataIn(tableName,dbName,primaryKey, payload ,where,startTime,endTime).then(count=>{
+                    res.count=count
+                    return new Promise((resolve, reject)=>{resolve(res)})
+                })
+            })
+        }else{
+            return this.sendRequest(sqlStr, payload)
+        }
+
+    })
 
    },
+   countDataIn(tableName, dbName,primaryKey, payload, where='',startTime=null,endTime=null){
+        where = this.timeWhere(primaryKey,where,startTime,endTime)
+        let sqlStr = 'SELECT '
+        let fieldStr= 'count(*)'
+        sqlStr += fieldStr + ` FROM ${dbName}.${tableName} `
+        if(where){
+            sqlStr +=` WHERE ${where} `
+        }
+        // console.log(sqlStr)
+        return this.sendRequest(sqlStr,payload).then(result=>{
+            if (result.res && result.data.length >0){
+                return new Promise((resolve, reject)=>{resolve(result.data[0]['count(*)'])})
+            }else{
+                return new Promise((resolve, reject)=>{resolve(0)})
+            }
+        })
+    },  
    rawSql(sqlStr){
         return this.sendRequest(sqlStr)
    }

@@ -117,6 +117,14 @@ new Vue({
           user:link.user,
           password:link.password
         }
+        //切换数据库的同时，清空表格
+        this.totalSurperTable = 0
+        this.surperTableData = []
+        this.surperTableLabel = []
+        this.totalTable = 0
+        this.tableData = []
+        this.tableLabel = []
+          
         TaosRestful.showSuperTables(dbName, payload).then(data =>{
           this.drawer = false
           this.surperTables = data.data
@@ -138,7 +146,6 @@ new Vue({
         this.surperTableName = val.name
 
         TaosRestful.selectData(val.name, this.theDBName, payload,null,null,limit=this.eachPageSurperTable,offset = '0').then(data =>{
-          console.log(data)
           this.totalSurperTable = data.count
           this.surperTableData = data.data
           this.surperTableLabel = data.data[0]?Object.keys(data.data[0]):[]

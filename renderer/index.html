@@ -118,6 +118,7 @@
                   </el-table>
                   <div class="paginationWrapper">
                     <el-pagination
+                      :hide-on-single-page="true"
                       @current-change	="paginationSurperChange"
                       :page-size="eachPageSurperTable"
                       layout="prev, pager, next"
