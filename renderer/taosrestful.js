@@ -136,6 +136,56 @@ module.exports = class TaosRestful {
     // console.log(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})` )
     return this.sendRequest(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})`)
    }
+   timeWhere(primaryKey,where,startTime,endTime){
+    where = where || ''
+    if(where){
+        where += startTime? ` and ${primaryKey} > '${startTime}' ` : ''
+        if(where){
+            where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
+        }else{
+            where += endTime? `${primaryKey} < '${endTime}' ` : ''
+        }
+    }else{
+        where += startTime? `${primaryKey} > '${startTime}' ` : ''
+        if(where){
+            where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
+        }else{
+            where += endTime? `${primaryKey} < '${endTime}' ` : ''
+        }
+    }
+    return where
+   }
+   countData(tableName,where='',dbName=null,startTime=null,endTime=null){
+    return this.disTable(tableName,dbName).then(res=>{
+        let primaryKey ='ts'
+        if(res.res && res.data.length>0){
+            primaryKey = res.data[0].Field
+        }else{
+            return {'res':false,'msg':'distable error','code':99}
+        }
+        return this.countDataIn(tableName,primaryKey,where,dbName,startTime,endTime)
+    })
+   }
+   countDataIn(tableName,primaryKey,where='',dbName=null,startTime=null,endTime=null){
+        where = this.timeWhere(primaryKey,where,startTime,endTime)
+        let dbN = dbName ? dbName : this.database
+        let sqlStr = 'SELECT '
+        let fieldStr= 'count(*)'
+        sqlStr += fieldStr + ` FROM ${dbN}.${tableName} `
+        if(where){
+            sqlStr +=` WHERE ${where} `
+        }
+        // console.log(sqlStr)
+        return this.sendRequest(sqlStr).then(result=>{
+            if (result.res && result.data.length >0){
+                return new Promise((resolve, reject)=>{resolve(result.data[0]['count(*)'])})
+            }else{
+                return new Promise((resolve, reject)=>{resolve(0)})
+            }
+        })
+        
+   }
+
    //查询数据
    selectData(tableName,fields=null,where='',limit =null,offset = null,desc =null,dbName=null,startTime=null,endTime=null){
     return this.disTable(tableName,dbName).then(res=>{
@@ -145,23 +195,8 @@ module.exports = class TaosRestful {
         }else{
             return {'res':false,'msg':'distable error','code':99}
         }
-        where = where || ''
-        if(where){
-            where += startTime? ` and ${primaryKey} > '${startTime}' ` : ''
-            if(where){
-                where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
-            }else{
-                where += endTime? `${primaryKey} < '${endTime}' ` : ''
-            }
-        }else{
-            where += startTime? `${primaryKey} > '${startTime}' ` : ''
-            if(where){
-                where += endTime? ` and ${primaryKey} < '${endTime}' ` : ''
-            }else{
-                where += endTime? `${primaryKey} < '${endTime}' ` : ''
-            }
-            
-        }
+
+        where = this.timeWhere(primaryKey,where,startTime,endTime)
         let dbN = dbName ? dbName : this.database
         let sqlStr = 'SELECT '
         let fieldStr= '*'
@@ -179,6 +214,7 @@ module.exports = class TaosRestful {
         if(desc != null){
             sqlStr +=` ORDER BY ${desc} DESC `
         }
+
         if(limit != null){
             sqlStr +=` LIMIT ${limit} `
         }
@@ -186,11 +222,21 @@ module.exports = class TaosRestful {
             sqlStr +=` OFFSET ${offset} `
         }
         
-        console.log(sqlStr)
-        return this.sendRequest(sqlStr)
+        // console.log(sqlStr)
+        if(limit != null){
+            return this.sendRequest(sqlStr).then(res=>{
+                // console.log(res)
+                return this.countDataIn(tableName,primaryKey,where,dbName,startTime,endTime).then(count=>{
+                    res.count=count
+                    return new Promise((resolve, reject)=>{resolve(res)})
+                })
+            })
+        }else{
+            return this.sendRequest(sqlStr)
+        }
 
     })
-    
+
 
    }
    rawSql(sqlStr){
