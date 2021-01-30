@@ -110,3 +110,20 @@ html, body, div {
     display: inline;
     margin-left: 50px;
 }
+
+.iconWrapper2{
+    display: inline;
+    position:absolute;
+    right: 14px;
+}
+
+.surperTables{
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.paginationWrapper{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}

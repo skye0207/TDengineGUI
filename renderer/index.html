@@ -65,6 +65,8 @@
                 <el-aside class="mainAside" width="200px">
                   <el-table
                   size="mini"
+                  highlight-current-row
+                  @current-change="handleClickSurperT"
                   :data="surperTables"
                   style="width: 100%">
                   <el-table-column
@@ -72,8 +74,7 @@
                     width="180">
                     <template slot="header" slot-scope="scope">   
                       <span>超级表名</span>
-                      <div class="iconWrapper"> 
-                        
+                      <div class="iconWrapper">
                         <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
                         <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
                         <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
@@ -82,7 +83,11 @@
                     </template>
                     <template slot-scope="scope">
                       <img class="icon1" src="./img/file.png">
-                      <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                      <span class="surperTables">{{ scope.row.name }}</span>
+                      <div class="iconWrapper2">
+                        <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png">
+                        <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png">
+                      </div>
                     </template>
                     
                   </el-table-column>
@@ -94,22 +99,32 @@
                     size="mini"
                     :data="surperTableData"
                     border
+                    max-height="600"
                     style="width: 100%">
                     <el-table-column
-                      prop="date"
-                      label="时间"
-                      width="180">
+                      fixed
+                      v-if="surperTableLabel[0]"
+                      :prop="surperTableLabel[0]"
+                      :label="surperTableLabel[0]"
+                      width="250">
                     </el-table-column>
                     <el-table-column
-                      prop="name"
-                      label="姓名"
+                      v-for="(data, index) in surperTableLabel.slice(1)"
+                      :key="index"
+                      :prop="data"
+                      :label="data"
                       width="180">
-                    </el-table-column>
-                    <el-table-column
-                      prop="address"
-                      label="地址">
                     </el-table-column>
                   </el-table>
+                  <div class="paginationWrapper">
+                    <el-pagination
+                      @current-change	="paginationSurperChange"
+                      :page-size="eachPageSurperTable"
+                      layout="prev, pager, next"
+                      :total="totalSurperTable">
+                    </el-pagination>
+                  </div>
+                  
                 </el-main>
               </el-container>
             </el-tab-pane>
@@ -119,6 +134,8 @@
                   <el-table
                   size="mini"
                   :data="tables"
+                  highlight-current-row
+                  @current-change="handleClickT"
                   style="width: 100%">
                     <el-table-column
                       label="表名"
@@ -135,7 +152,11 @@
                       </template>
                       <template slot-scope="scope">
                         <img class="icon1" src="./img/file.png">
-                        <span style="margin-left: 10px">{{ scope.row.table_name }}</span>
+                        <span  class="surperTables">{{ scope.row.table_name }}</span>
+                        <div class="iconWrapper2">
+                          <img class="icon1" @click="editT" src="./img/edit.png">
+                          <img class="icon1" @click="deleteT" src="./img/delete.png">
+                        </div>
                       </template>
                       
                     </el-table-column>
@@ -146,22 +167,31 @@
                     size="mini"
                     :data="tableData"
                     border
-                    style="width: 100%">
+                    max-height="600"
+                    style="width: 100%;">
                     <el-table-column
-                      prop="date"
-                      label="时间"
-                      width="180">
-                    </el-table-column>
-                    <el-table-column
-                      prop="name"
-                      label="姓名"
-                      width="180">
-                    </el-table-column>
-                    <el-table-column
-                      prop="address"
-                      label="地址">
-                    </el-table-column>
+                    fixed
+                    v-if="tableLabel[0]"
+                    :prop="tableLabel[0]"
+                    :label="tableLabel[0]"
+                    width="250">
+                  </el-table-column>
+                  <el-table-column
+                    v-for="(data, index) in tableLabel.slice(1)"
+                    :key="index"
+                    :prop="data"
+                    :label="data">
+                  </el-table-column>
                   </el-table>
+                  <div class="paginationWrapper">
+                  <el-pagination
+                      @current-change	="paginationChange"
+                      :hide-on-single-page="true"
+                      :page-size="eachPageTable"
+                      layout="prev, pager, next"
+                      :total="totalTable">
+                  </el-pagination>
+                  </div>
                 </el-main>
               </el-container>
             </el-tab-pane>

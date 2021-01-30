@@ -49,7 +49,15 @@ new Vue({
         surperTables: [],
         tables: [],
         surperTableData: [],
+        surperTableName: "",
+        totalSurperTable: 0,
+        eachPageSurperTable:8,
+        surperTableLabel: [],
         tableData: [],
+        tableName: "",
+        totalTable: 0,
+        tableLabel: [],
+        eachPageTable:8,
         links:[],
         theLink:{},
         theDBName: ''
@@ -110,7 +118,6 @@ new Vue({
           password:link.password
         }
         TaosRestful.showSuperTables(dbName, payload).then(data =>{
-          console.log(data)
           this.drawer = false
           this.surperTables = data.data
         })
@@ -120,7 +127,79 @@ new Vue({
         //记录当前数据库
         this.theDBName = dbName
         storage.setTheDB(dbName)
+      },
+      handleClickSurperT(val) {
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.surperTableName = val.name
+
+        TaosRestful.selectData(val.name, this.theDBName, payload,null,null,limit=this.eachPageSurperTable,offset = '0').then(data =>{
+          console.log(data)
+          this.totalSurperTable = data.count
+          this.surperTableData = data.data
+          this.surperTableLabel = data.data[0]?Object.keys(data.data[0]):[]
+        })
+      },
+      handleClickT(val) {
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.tableName = val.table_name
+        TaosRestful.selectData(val.table_name, this.theDBName, payload,null,null,limit=this.eachPageTable,offset = '0').then(data =>{
+          this.totalTable = data.count
+          this.tableData = data.data
+          this.tableLabel = data.data[0]?Object.keys(data.data[0]):[]
+        })
+      },
+      editSurperT(val) {
+        console.log(val)
+      },
+      deleteSurperT(val) {
+        console.log(val)
+      },
+      editT(val) {
+        console.log(val)
+      },
+      deleteT(val) {
+        console.log(val)
+      },
+      paginationSurperChange(val){
+        let offsetVal = (val-1)*this.eachPageSurperTable
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        TaosRestful.selectData(this.surperTableName, this.theDBName, payload,null,null,limit=this.eachPageSurperTable,offset = offsetVal).then(data =>{
+          this.totalSurperTable = data.count
+          this.surperTableData = data.data
+          this.surperTableLabel = data.data[0]?Object.keys(data.data[0]):[]
+        })
+      },
+
+      paginationChange(val){
+        let offsetVal = (val-1)*this.eachPageTable
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        TaosRestful.selectData(this.tableName, this.theDBName, payload,null,null,limit=this.eachPageTable,offset = offsetVal).then(data =>{
+          this.totalTable = data.count
+          this.tableData = data.data
+          this.tableLabel = data.data[0]?Object.keys(data.data[0]):[]
+        })
       }
+      
     }
   })
 

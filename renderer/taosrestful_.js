@@ -18,7 +18,6 @@ module.exports = {
             },
             timeout: payload.timeout
         })
-
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
@@ -134,8 +133,7 @@ module.exports = {
     return this.sendRequest(`INSERT INTO ${dbN}.${tableName} (${fields.slice(0,-1)}) VALUES (${values.slice(0,-1)})`)
    },
    //查询数据
-   selectData(tableName,fields=null,where=null,limit =null,offset = null,desc =null,dbName=null){
-        let dbN = dbName ? dbName : this.database
+   selectData(tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null){
         let sqlStr = 'SELECT '
         let fieldStr= '*'
         if(fields && fields.length>0){
@@ -145,7 +143,7 @@ module.exports = {
             });
             fieldStr = fieldStr.slice(0,-1)
         }
-        sqlStr += fieldStr + ` FROM ${dbN}.${tableName} `
+        sqlStr += fieldStr + ` FROM ${dbName}.${tableName} `
         if(where){
             sqlStr +=` WHERE ${where} `
         }
@@ -158,9 +156,7 @@ module.exports = {
         if(offset != null){
             sqlStr +=` OFFSET ${offset} `
         }
-        
-        // console.log(sqlStr)
-        return this.sendRequest(sqlStr)
+        return this.sendRequest(sqlStr, payload)
 
    },
    rawSql(sqlStr){
