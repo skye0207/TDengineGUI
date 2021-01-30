@@ -18,6 +18,7 @@ module.exports = {
             },
             timeout: payload.timeout
         })
+        console.log(res)
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
