@@ -80,6 +80,7 @@ html, body, div {
     position: relative;
     top: 2px;
     cursor: pointer;
+    z-index: 111;
 }
 
 .icon11{
@@ -139,4 +140,9 @@ html, body, div {
     margin-top: 20px;
     display: flex;
     justify-content: center;
+}
+
+.submenuLink{
+    max-height: 70%;
+    overflow-y: auto;
 }

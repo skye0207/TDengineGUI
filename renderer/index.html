@@ -22,12 +22,12 @@
         </el-row>   
         <el-menu
         class="el-menu-vertical-demo">
-        <el-submenu :index="String(index)" :key="link.name" v-for="(link, index) in links">
+        <el-submenu class="submenuLink" :index="String(index)" :key="link.name" v-for="(link, index) in links">
           <template slot="title">
             <span>{{link.name}}</span>
             <div class="iconWrapper3">
-              <img class="icon1" src="./img/add.png">
-              <img class="icon1" src="./img/fresh.png">
+              <img @click.stop="addDB(link)" class="icon1" src="./img/add.png">
+              <img @click.stop="freshDB(link)" class="icon1" src="./img/fresh.png">
               <img class="icon1" src="./img/delete.png">
             </div>
           </template>
@@ -40,6 +40,19 @@
         </el-menu-item>
         </el-menu>
       </el-drawer>
+      <!-- 添加数据库的弹窗 -->
+      <el-dialog :visible.sync="addDBDialog" title="添加数据库">
+        <el-form :model="addDBForm" class="linkformstyle">
+          <el-form-item label="名称" :label-width="formLabelWidth">
+            <el-input v-model="addDBForm.name" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addDBDialog = false" size="medium">取 消</el-button>
+          <el-button type="primary" @click="postaddDB" size="medium">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 新建连接的弹窗 -->
       <el-dialog :visible.sync="dialogVisible" title="新建连接">
         <el-form :model="linkForm" class="linkformstyle">
           <el-form-item label="名称" :label-width="formLabelWidth">

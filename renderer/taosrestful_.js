@@ -52,35 +52,35 @@ module.exports = {
             }
         )
    },
-   //创建新的数据库
-//    createDatabase(dbName,safe=true,keep= null,update=false,comp=null,replica=null,quorum=null,blocks=null){
-//         let sqlStr = 'CREATE DATABASE '
-//         if(safe){
-//             sqlStr += 'IF NOT EXISTS '
-//         }
-//         sqlStr += dbName
+   //添加数据库
+   createDatabase(dbName, payload,safe=true,keep= null,update=false,comp=null,replica=null,quorum=null,blocks=null){
+        let sqlStr = 'CREATE DATABASE '
+        if(safe){
+            sqlStr += 'IF NOT EXISTS '
+        }
+        sqlStr += dbName
 
-//         if(keep != null){
-//             sqlStr += ` KEEP ${keep}`
-//         }
-//         if(comp != null){
-//             sqlStr += ` COMP ${comp}`
-//         }
-//         if(replica != null) {
-//             sqlStr += ` REPLICA ${replica}`
-//         }
-//         if(quorum != null){
-//             sqlStr += ` QUORUM ${quorum}`
-//         }
-//         if(blocks != null){
-//             sqlStr += ` BLOCKS ${blocks}`
-//         }
-//         if(update != null){
-//             sqlStr += ` UPDATE 1`
-//         }
-//         // console.log(sqlStr)
-//         return this.sendRequest(sqlStr)
-//    },
+        if(keep != null){
+            sqlStr += ` KEEP ${keep}`
+        }
+        if(comp != null){
+            sqlStr += ` COMP ${comp}`
+        }
+        if(replica != null) {
+            sqlStr += ` REPLICA ${replica}`
+        }
+        if(quorum != null){
+            sqlStr += ` QUORUM ${quorum}`
+        }
+        if(blocks != null){
+            sqlStr += ` BLOCKS ${blocks}`
+        }
+        if(update != null){
+            sqlStr += ` UPDATE 1`
+        }
+        // console.log(sqlStr)
+        return this.sendRequest(sqlStr, payload)
+   },
    
 //    alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
 //         let sqlStr = 'ALTER DATABASE '

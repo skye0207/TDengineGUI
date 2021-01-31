@@ -36,12 +36,17 @@ new Vue({
       return { 
         drawer: false,
         dialogVisible: false,
+        addDBDialog:false,
         linkForm: {
           name:"",
           host:"",
           port:"",
           user:"",
           password:"",
+        },
+        addDBDialogLink:{},
+        addDBForm:{
+          name:""
         },
         searchIcon: true,
         freshIcon: true,
@@ -205,6 +210,56 @@ new Vue({
           this.tableData = data.data
           this.tableLabel = data.data[0]?Object.keys(data.data[0]):[]
         })
+      },
+      freshDB(link){
+        let payload = {
+          ip:link.host,
+          port:link.port,
+          user:link.user,
+          password:link.password
+        }
+        TaosRestful.showDatabases(payload).then(data =>{
+          //处理返回的数据库数据
+          if(data.res){
+            //连接成功，保存到本地
+            storage.setTheLink({
+              name: link.name, 
+              host: link.host, 
+              port: link.port, 
+              user: link.user, 
+              password: link.password, 
+              dbs: data.data
+            })
+            this.links = storage.getLinks()
+            
+          } else {
+            //连接失败
+          }
+        })
+      },
+      addDB(link){
+        this.addDBDialogLink = link
+        this.addDBDialog = true
+      },
+      postaddDB(){
+        console.log("postaddDBs", this.addDBForm.name)
+        let payload = {
+          ip:this.addDBDialogLink.host,
+          port:this.addDBDialogLink.port,
+          user:this.addDBDialogLink.user,
+          password:this.addDBDialogLink.password
+        }
+        if(this.addDBForm.name){
+          TaosRestful.createDatabase(this.addDBForm.name, payload).then(data => {
+            console.log(data)
+            if(data.res){
+              //新增成功
+              
+            }else{
+
+            }
+          })
+        }
       }
       
     }
