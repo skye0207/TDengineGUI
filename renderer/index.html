@@ -25,10 +25,16 @@
         <el-submenu :index="String(index)" :key="link.name" v-for="(link, index) in links">
           <template slot="title">
             <span>{{link.name}}</span>
+            <div class="iconWrapper3">
+              <img class="icon1" src="./img/add.png">
+              <img class="icon1" src="./img/fresh.png">
+              <img class="icon1" src="./img/delete.png">
+            </div>
           </template>
           <el-menu-item @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index) in link.dbs" >
             <img class="icon11" src="./img/database.png">
             {{db.name}}
+            <img class="icon111" src="./img/edit.png">
           </el-menu-item>
         </el-submenu>
         </el-menu-item>
@@ -86,7 +92,7 @@
                       <span class="surperTables">{{ scope.row.name }}</span>
                       <div class="iconWrapper2">
                         <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png">
-                        <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png">
+                        <!-- <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png"> -->
                       </div>
                     </template>
                     
@@ -156,7 +162,7 @@
                         <span  class="surperTables">{{ scope.row.table_name }}</span>
                         <div class="iconWrapper2">
                           <img class="icon1" @click="editT" src="./img/edit.png">
-                          <img class="icon1" @click="deleteT" src="./img/delete.png">
+                          <!-- <img class="icon1" @click="deleteT" src="./img/delete.png"> -->
                         </div>
                       </template>
                       

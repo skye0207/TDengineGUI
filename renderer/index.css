@@ -89,6 +89,13 @@ html, body, div {
     bottom: 1px;
     right: 8px;
 }
+.icon111{
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: 19px;
+    right: 8px;
+}
 
 .switchBtn{
     position: relative;
@@ -115,6 +122,12 @@ html, body, div {
     display: inline;
     position:absolute;
     right: 14px;
+    height: 100%;
+}
+.iconWrapper3{
+    display: inline;
+    position:absolute;
+    right: 54px;
 }
 
 .surperTables{
