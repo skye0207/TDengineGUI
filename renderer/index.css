@@ -9,8 +9,8 @@ html, body, div {
 }
 
 .el-drawer {
-    padding: 0 20px;
-    width: 150px;
+    padding: 0px 0px 0px 20px;
+    width: 600px;
 }
 
 .linkBtn{
@@ -142,7 +142,12 @@ html, body, div {
     justify-content: center;
 }
 
-.submenuLink{
-    max-height: 70%;
+.menu{
     overflow-y: auto;
+    height: 650px;
 }
+
+.greyText{
+    color: #606266;
+}
+

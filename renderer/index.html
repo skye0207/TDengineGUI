@@ -9,41 +9,65 @@
     <script src="../node_modules/vue/dist/vue.js"></script>
     <script src="../node_modules/element-ui/lib/index.js"></script>
     <div id="app">
-
      
-      <!-- 选择数据库 -->
-      </el-button>
+      <!-- 连接列表 -->
       <el-drawer
         title="数据库"
         :visible.sync="drawer"
         direction="ltr">
-        <el-row>
-          <el-button class="linkBtn" @click="dialogVisible = true" size="small" type="primary" plain>新建连接</el-button>
-        </el-row>   
-        <el-menu
-        class="el-menu-vertical-demo">
-        <el-submenu class="submenuLink" :index="String(index)" :key="link.name" v-for="(link, index) in links">
-          <template slot="title">
-            <span>{{link.name}}</span>
-            <div class="iconWrapper3">
-              <img @click.stop="addDB(link)" class="icon1" src="./img/add.png">
-              <img @click.stop="freshDB(link)" class="icon1" src="./img/fresh.png">
-              <img class="icon1" src="./img/delete.png">
-            </div>
-          </template>
-          <el-menu-item @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index) in link.dbs" >
-            <img class="icon11" src="./img/database.png">
-            {{db.name}}
-            <img class="icon111" src="./img/edit.png">
-          </el-menu-item>
-        </el-submenu>
-        </el-menu-item>
-        </el-menu>
+        <div v-loading="loadingLinks">
+          <el-row>
+            <el-button class="linkBtn" @click="addLinkDialog = true" size="small" type="primary" plain>新建连接</el-button>
+          </el-row>   
+          <el-menu class="menu"  @open="freshDB" :unique-opened="true">
+            <el-submenu :index="String(index)" :key="index" v-for="(link, index) in links">
+              <template slot="title">
+                <span>{{link.name}}</span>
+                <div class="iconWrapper3">
+                  <img @click.stop="addDB(link)" class="icon1" src="./img/add.png">
+                  <img @click.stop="freshDB(index)" class="icon1" src="./img/fresh.png">
+                  <img class="icon1" src="./img/delete.png">
+                </div>
+              </template>
+              <el-menu-item class="menuitem" @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index) in link.dbs" >
+                <img class="icon11" src="./img/database.png">
+                {{db.name}}
+                <img class="icon111" @click="deleteDB(link, db.name)"  src="./img/delete.png">
+              </el-menu-item>
+            </el-submenu>
+            
+          </el-menu>
+        </div>
+        
       </el-drawer>
+      <!-- 新建连接的弹窗 -->
+      <el-dialog :visible.sync="addLinkDialog" title="新建连接">
+        <el-form :model="linkForm"  :ref="linkForm" class="linkformstyle" label-width="80px">
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="linkForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="Host" prop="host">
+            <el-input v-model="linkForm.host"></el-input>
+          </el-form-item>
+          <el-form-item label="Port" prop="port">
+            <el-input v-model="linkForm.port"></el-input>
+          </el-form-item>
+          <el-form-item label="User" prop="user">
+            <el-input v-model="linkForm.user"></el-input>
+          </el-form-item>
+          <el-form-item label="Password" prop="password">
+            <el-input v-model="linkForm.password"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="cancelAddLink" size="medium">取 消</el-button>
+          <el-button type="primary" @click="confirmAddLink" size="medium">确 定</el-button>
+        </div>
+      </el-dialog>
       <!-- 添加数据库的弹窗 -->
       <el-dialog :visible.sync="addDBDialog" title="添加数据库">
         <el-form :model="addDBForm" class="linkformstyle">
-          <el-form-item label="名称" :label-width="formLabelWidth">
+          <el-form-item label="名称" label-width="80px">
             <el-input v-model="addDBForm.name" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
@@ -52,118 +76,26 @@
           <el-button type="primary" @click="postaddDB" size="medium">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 新建连接的弹窗 -->
-      <el-dialog :visible.sync="dialogVisible" title="新建连接">
-        <el-form :model="linkForm" class="linkformstyle">
-          <el-form-item label="名称" :label-width="formLabelWidth">
-            <el-input v-model="linkForm.name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Host" :label-width="formLabelWidth">
-            <el-input v-model="linkForm.host" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Port" :label-width="formLabelWidth">
-            <el-input v-model="linkForm.port" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="User" :label-width="formLabelWidth">
-            <el-input v-model="linkForm.user" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Password" :label-width="formLabelWidth">
-            <el-input v-model="linkForm.password" autocomplete="off"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false" size="medium">取 消</el-button>
-          <el-button type="primary" @click="postLinkForm" size="medium">确 定</el-button>
-        </div>
-      </el-dialog>
+      
       <el-container class="main">
         <el-container class="mainContent">
-          <el-tabs type="border-card" class="mainTab">
-            <el-tab-pane label="超级表" class="tablePage">
+          <el-tabs v-model="activeTab" type="border-card" class="mainTab"  @tab-click="handleSwichTab">
+            <el-tab-pane label="超级表" class="tablePage" name="1">
               <el-container class="tableWrapper">
                 <el-aside class="mainAside" width="200px">
-                  <el-table
-                  size="mini"
-                  highlight-current-row
-                  @current-change="handleClickSurperT"
-                  :data="surperTables"
-                  style="width: 100%">
-                  <el-table-column
-                    label="超级表名"
-                    width="180">
-                    <template slot="header" slot-scope="scope">   
-                      <span>超级表名</span>
-                      <div class="iconWrapper">
-                        <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
-                        <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
-                        <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
-                        <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
-                      </div>
-                    </template>
-                    <template slot-scope="scope">
-                      <img class="icon1" src="./img/file.png">
-                      <span class="surperTables">{{ scope.row.name }}</span>
-                      <div class="iconWrapper2">
-                        <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png">
-                        <!-- <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png"> -->
-                      </div>
-                    </template>
-                    
-                  </el-table-column>
-                  </el-table>
-                </el-aside>
-                <el-main>
-
-                  <el-table
+                  <div v-loading="loadingSurperList">
+                    <el-table
                     size="mini"
-                    :data="surperTableData"
-                    border
-                    max-height="600"
+                    highlight-current-row
+                    @current-change="handleClickSurperT"
+                    :data="surperTables"
                     style="width: 100%">
                     <el-table-column
-                      fixed
-                      v-if="surperTableLabel[0]"
-                      :prop="surperTableLabel[0]"
-                      :label="surperTableLabel[0]"
-                      width="250">
-                    </el-table-column>
-                    <el-table-column
-                      v-for="(data, index) in surperTableLabel.slice(1)"
-                      :key="index"
-                      :prop="data"
-                      :label="data"
-                      width="180">
-                    </el-table-column>
-                  </el-table>
-                  <div class="paginationWrapper">
-                    <el-pagination
-                      :hide-on-single-page="true"
-                      @current-change	="paginationSurperChange"
-                      :page-size="eachPageSurperTable"
-                      layout="prev, pager, next"
-                      :total="totalSurperTable">
-                    </el-pagination>
-                  </div>
-                  
-                </el-main>
-              </el-container>
-            </el-tab-pane>
-            <el-tab-pane label="表" class="tablePage">
-              <el-container class="tableWrapper">
-                <el-aside class="mainAside" width="200px">
-                  <el-table
-                  size="mini"
-                  :data="tables"
-                  highlight-current-row
-                  @current-change="handleClickT"
-                  style="width: 100%">
-                    <el-table-column
-                      label="表名"
+                      label="超级表名"
                       width="180">
                       <template slot="header" slot-scope="scope">   
-                        <span>表名</span>
-                        <div class="iconWrapper"> 
-                          
+                        <span>超级表名</span>
+                        <div class="iconWrapper">
                           <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
                           <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
                           <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
@@ -172,51 +104,128 @@
                       </template>
                       <template slot-scope="scope">
                         <img class="icon1" src="./img/file.png">
-                        <span  class="surperTables">{{ scope.row.table_name }}</span>
+                        <span class="surperTables">{{ scope.row.name }}</span>
                         <div class="iconWrapper2">
-                          <img class="icon1" @click="editT" src="./img/edit.png">
-                          <!-- <img class="icon1" @click="deleteT" src="./img/delete.png"> -->
+                          <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png">
+                          <!-- <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png"> -->
                         </div>
                       </template>
                       
                     </el-table-column>
-                  </el-table>
+                    </el-table>
+                  </div>
                 </el-aside>
                 <el-main>
-                  <el-table
+                  <div v-loading="loadingSurperTable">
+                    <el-table
+                      size="mini"
+                      :data="surperTableData"
+                      border
+                      max-height="600"
+                      style="width: 100%">
+                      <el-table-column
+                        fixed
+                        v-if="surperTableLabel[0]"
+                        :prop="surperTableLabel[0]"
+                        :label="surperTableLabel[0]"
+                        width="250">
+                      </el-table-column>
+                      <el-table-column
+                        v-for="(data, index) in surperTableLabel.slice(1)"
+                        :key="index"
+                        :prop="data"
+                        :label="data"
+                        width="180">
+                      </el-table-column>
+                    </el-table>
+                    <!-- 分页 -->
+                    <div class="paginationWrapper">
+                      <el-pagination
+                        :hide-on-single-page="true"
+                        @current-change	="paginationSurperChange"
+                        :page-size="eachPageSurperTable"
+                        layout="prev, pager, next"
+                        :total="totalSurperTable">
+                      </el-pagination>
+                    </div>
+                  </div>  
+                  
+                </el-main>
+              </el-container>
+            </el-tab-pane>
+            <el-tab-pane label="表" class="tablePage" name="2">
+              <el-container class="tableWrapper">
+                <el-aside class="mainAside" width="200px">
+                  <div v-loading="loadingTableList">
+                    <el-table
                     size="mini"
-                    :data="tableData"
-                    border
-                    max-height="600"
-                    style="width: 100%;">
+                    :data="tables"
+                    highlight-current-row
+                    @current-change="handleClickT"
+                    style="width: 100%">
+                      <el-table-column
+                        label="表名"
+                        width="180">
+                        <template slot="header" slot-scope="scope">   
+                          <span>表名</span>
+                          <div class="iconWrapper"> 
+                            
+                            <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
+                            <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
+                            <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
+                            <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
+                          </div>
+                        </template>
+                        <template slot-scope="scope">
+                          <img class="icon1" src="./img/file.png">
+                          <span  class="surperTables">{{ scope.row.table_name }}</span>
+                          <div class="iconWrapper2">
+                            <img class="icon1" @click="editT" src="./img/edit.png">
+                            <!-- <img class="icon1" @click="deleteT" src="./img/delete.png"> -->
+                          </div>
+                        </template>
+                        
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </el-aside>
+                <el-main>
+                  <div v-loading="loadingTable">
+                    <el-table
+                      size="mini"
+                      :data="tableData"
+                      border
+                      max-height="600"
+                      style="width: 100%;">
+                      <el-table-column
+                      fixed
+                      v-if="tableLabel[0]"
+                      :prop="tableLabel[0]"
+                      :label="tableLabel[0]"
+                      width="250">
+                    </el-table-column>
                     <el-table-column
-                    fixed
-                    v-if="tableLabel[0]"
-                    :prop="tableLabel[0]"
-                    :label="tableLabel[0]"
-                    width="250">
-                  </el-table-column>
-                  <el-table-column
-                    v-for="(data, index) in tableLabel.slice(1)"
-                    :key="index"
-                    :prop="data"
-                    :label="data">
-                  </el-table-column>
-                  </el-table>
-                  <div class="paginationWrapper">
-                  <el-pagination
-                      @current-change	="paginationChange"
-                      :hide-on-single-page="true"
-                      :page-size="eachPageTable"
-                      layout="prev, pager, next"
-                      :total="totalTable">
-                  </el-pagination>
+                      v-for="(data, index) in tableLabel.slice(1)"
+                      :key="index"
+                      :prop="data"
+                      :label="data">
+                    </el-table-column>
+                    </el-table>
+                    <div class="paginationWrapper">
+                      <el-pagination
+                          @current-change	="paginationChange"
+                          :hide-on-single-page="true"
+                          :page-size="eachPageTable"
+                          layout="prev, pager, next"
+                          :total="totalTable">
+                      </el-pagination>
+                    </div>
                   </div>
                 </el-main>
               </el-container>
             </el-tab-pane>
-            <el-tab-pane label="控制台">控制台</el-tab-pane>
-            <el-tab-pane label="数据库属性">数据库属性</el-tab-pane>
+            <el-tab-pane label="控制台" name="3">控制台</el-tab-pane>
+            <el-tab-pane label="数据库属性" name="4">数据库属性</el-tab-pane>
           </el-tabs>
           
         </el-container>
@@ -228,9 +237,10 @@
             <div class="footTextWrapper">
 
             </div>
-            <div class="footText">当前数据库:</div> 
-            <div class="footText">{{theLink.name}}</div> 
-            <div class="footText">{{theDBName}}</div> 
+            <div class="footText">当前连接:</div> 
+            <div class="footText greyText">{{theLink.name}}</div> 
+            <div class="footText">数据库:</div> 
+            <div class="footText greyText">{{theDB}}</div> 
         </el-footer>
       </el-container>
 

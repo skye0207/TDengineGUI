@@ -1,41 +1,16 @@
 const TaosRestful = require('./taosrestful_.js')
-
 const storage = require('./localDataStore.js')
-
 
 new Vue({
     el: '#app',
     mounted: function () {
       this.$data.links = storage.getLinks()
-      let theLink = storage.getTheLink()
-      let theDBName = storage.getTheDB()
-      //如果当前连接和当前数据库不为空，拉取超级表数据
-      if(theLink && theDBName){
-        this.$data.theLink = theLink
-        this.$data.theDBName = theDBName
-        let payload = {
-          ip:theLink.host,
-          port:theLink.port,
-          user:theLink.user,
-          password:theLink.password
-        }
-        TaosRestful.showSuperTables(theDBName, payload).then(data =>{
-          this.$data.surperTables = data.data
-        })
-        TaosRestful.showTables(theDBName, payload).then(data =>{
-          this.tables = data.data
-        })
-      } else {
-         //如果为空显示连接数据库
-         this.$data.drawer = true
-      }
-     
-
     },
     data: function() {
       return { 
-        drawer: false,
-        dialogVisible: false,
+        loadingLinks: false,
+        drawer: true,
+        addLinkDialog: false,
         addDBDialog:false,
         linkForm: {
           name:"",
@@ -44,38 +19,54 @@ new Vue({
           user:"",
           password:"",
         },
+        activeTab:"1",
+        
+        surperTables: [], //超级表list
+        surperTableData: [],
+        surperTableName: "",
+        totalSurperTable: 0,
+        surperTableLabel: [],
+        loadingSurperList: false,
+        loadingSurperTable: false,
+
+        tables: [], //表list
+        tableData: [],
+        tableName: "",
+        totalTable: 0,
+        tableLabel: [],
+        loadingTableList: false,
+        loadingTable: false,
+
+        eachPageSurperTable:8,
+        eachPageTable:8,
+
         addDBDialogLink:{},
         addDBForm:{
           name:""
         },
         searchIcon: true,
         freshIcon: true,
-        formLabelWidth: '80px',
-        surperTables: [],
-        tables: [],
-        surperTableData: [],
-        surperTableName: "",
-        totalSurperTable: 0,
-        eachPageSurperTable:8,
-        surperTableLabel: [],
-        tableData: [],
-        tableName: "",
-        totalTable: 0,
-        tableLabel: [],
-        eachPageTable:8,
         links:[],
-        theLink:{},
-        theDBName: ''
+        theLink:{}, //当前连接
+        theDB: "", //当前数据库
       }
     },
     methods: {
-      postLinkForm: function (event) { 
+      cancelAddLink: function () {
+        this.addLinkDialog = false
+        //清空表单
+        this.linkForm={
+          name:"",
+          host:"",
+          port:"",
+          user:"",
+          password:""
+        }
+      },
+      confirmAddLink: function (event) { 
        
-        //新建连接，先连接，如果成功了，更新本地连接缓存
-        //虚假
+        //新建连接，先连接，如果成功，将payload+name记入本地
         //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
-        //真实
-        //var tr = new TaosRestful(this.linkForm.host,this.linkForm.port,this.linkForm.user,this.linkForm.password)
         let payload = {
           ip:this.linkForm.host,
           port:this.linkForm.port,
@@ -86,16 +77,15 @@ new Vue({
             //处理返回的数据库数据
             if(data.res){
               //连接成功，保存到本地
-              storage.setTheLink({
+              storage.AddALink({
                 name: this.linkForm.name, 
                 host: this.linkForm.host, 
                 port: this.linkForm.port, 
                 user: this.linkForm.user, 
-                password: this.linkForm.password, 
-                dbs: data.data
+                password: this.linkForm.password
               })
               //关闭新建连接的弹窗
-              this.dialogVisible = false
+              this.addLinkDialog = false
               //清空表单
               this.linkForm={
                 name:"",
@@ -106,40 +96,155 @@ new Vue({
               }
               //更新连接列表
               this.links = storage.getLinks()
-              this.theLink = storage.getTheLink()
             } else {
               //连接失败
             }
             
         }
         )
-      },
-      alartDB(link,dbName){
-        //处理点击数据库名事件，拉取数据库中的数据表
-        let payload = {
-          ip:link.host,
-          port:link.port,
-          user:link.user,
-          password:link.password
+        //清空表单
+        this.linkForm={
+          name:"",
+          host:"",
+          port:"",
+          user:"",
+          password:""
         }
-        //切换数据库的同时，清空表格
+      },
+      freshDB(key){
+        let theLink = this.links[key]
+        let payload = {
+          ip:theLink.host,
+          port:theLink.port,
+          user:theLink.user,
+          password:theLink.password
+        }
+        this.loadingLinks = true
+        TaosRestful.showDatabases(payload).then(data =>{
+          this.loadingLinks = false
+          if(data.res){
+            this.$message({
+              message: '刷新成功',
+              type: 'success'
+            });
+            this.links[key].dbs = data.data
+          } else {
+            //连接失败，1.提示 2.删除当前连接 3.重新连接
+            //1
+            this.$message({
+              message: '连接失败',
+              type: 'error'
+            });
+            //2
+            storage.deleteALink(key)
+            this.links = storage.getLinks()
+            //3
+            this.$message({
+              message: '尝试重新连接',
+              type: 'warning'
+            });
+            this.linkForm = {
+              name: theLink.name,
+              host: theLink.host,
+              port: theLink.port,
+              user: theLink.user,
+              password: theLink.password,
+            }
+            this.addLinkDialog = true
+          }
+        })
+      },
+      clearSurperTable(){
+        this.surperTableName = ""
         this.totalSurperTable = 0
         this.surperTableData = []
         this.surperTableLabel = []
+      },
+      clearTable(){
+        this.tableName = ""
         this.totalTable = 0
         this.tableData = []
         this.tableLabel = []
-          
-        TaosRestful.showSuperTables(dbName, payload).then(data =>{
-          this.drawer = false
-          this.surperTables = data.data
+      },
+      alartDB(link,dbName){        
+        //切换数据库前先清空表
+        this.surperTables = []  
+        this.clearSurperTable()
+        this.tables = []
+        this.clearTable()
+      
+        //记录进入的数据库
+        this.theLink = link
+        this.theDB = dbName
+
+        //更新超级表页
+        this.drawer = false
+        this.activeTab = "1"
+        this.freshSurperTables()
+      },
+      freshSurperTables(){
+        this.surperTables = []  
+        this.clearSurperTable()
+        
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingSurperList = true
+        TaosRestful.showSuperTables(this.theDB, payload).then(data =>{
+          if(data.res){
+            //拉取超级表成功
+            this.$message({
+              message: '刷新成功',
+              type: 'success'
+            });
+            this.surperTables = data.data
+          }
+          this.loadingSurperList = false
         })
-        TaosRestful.showTables(dbName, payload).then(data =>{
-          this.tables = data.data
+      },
+      freshTables(){
+        this.tables = []
+        this.clearTable()
+
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingTableList = true
+        TaosRestful.showTables(this.theDB, payload).then(data =>{
+          if(data.res){
+            //拉取表成功
+            this.$message({
+              message: '刷新成功',
+              type: 'success'
+            });
+            this.tables = data.data
+          }
+          this.loadingTableList = false
         })
-        //记录当前数据库
-        this.theDBName = dbName
-        storage.setTheDB(dbName)
+      },
+      handleSwichTab(tab) {
+        switch(tab.name) {
+          case "1":
+            //超级表
+            this.freshSurperTables()
+            break;
+          case "2":
+            //表
+            this.freshTables()
+            break;
+          case "3":
+            //控制台
+            break;
+          case "4":
+            //数据库属性
+            break;
+     } 
       },
       handleClickSurperT(val) {
         let payload = {
@@ -148,12 +253,32 @@ new Vue({
           user:this.theLink.user,
           password:this.theLink.password
         }
+        this.clearSurperTable()
         this.surperTableName = val.name
+        this.loadingSurperTable = true
+        
+        TaosRestful.selectData(val.name, this.theDB, payload,null,null,limit=this.eachPageSurperTable,offset = '0')
+        .then(data =>{
+          if(data.res){
+            //成功
+            this.$message({
+              message: '获取成功',
+              type: 'success'
+            });
+            if(data.data.length != 0){
+              //有数据
+              this.surperTableLabel = Object.keys(data.data[0])
+              this.surperTableData = data.data
+              this.totalSurperTable = data.count
+            } else {
+              this.$message({
+                message: '无数据',
+                type: 'success'
+              });
+            }
+          }
+          this.loadingSurperTable = false
 
-        TaosRestful.selectData(val.name, this.theDBName, payload,null,null,limit=this.eachPageSurperTable,offset = '0').then(data =>{
-          this.totalSurperTable = data.count
-          this.surperTableData = data.data
-          this.surperTableLabel = data.data[0]?Object.keys(data.data[0]):[]
         })
       },
       handleClickT(val) {
@@ -163,13 +288,97 @@ new Vue({
           user:this.theLink.user,
           password:this.theLink.password
         }
+        this.clearTable()
         this.tableName = val.table_name
-        TaosRestful.selectData(val.table_name, this.theDBName, payload,null,null,limit=this.eachPageTable,offset = '0').then(data =>{
-          this.totalTable = data.count
-          this.tableData = data.data
-          this.tableLabel = data.data[0]?Object.keys(data.data[0]):[]
+        this.loadingTable = true
+        
+
+        TaosRestful.selectData(val.table_name, this.theDB, payload,null,null,limit=this.eachPageTable,offset = '0').then(data =>{
+          if(data.res){
+            //成功
+            this.$message({
+              message: '获取成功',
+              type: 'success'
+            });
+            if(data.data.length != 0){
+              //有数据
+              this.tableLabel = Object.keys(data.data[0])
+              this.tableData = data.data
+              this.totalTable = data.count
+            } else {
+              this.$message({
+                message: '无数据',
+                type: 'success'
+              });
+            }
+          }
+          this.loadingTable = false
         })
       },
+      paginationSurperChange(val){
+        let offsetVal = (val-1)*this.eachPageSurperTable
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingSurperTable = true
+
+        TaosRestful.selectData(this.surperTableName, this.theDB, payload,null,null,limit=this.eachPageSurperTable,offset = offsetVal).then(data =>{
+          if(data.res){
+            //成功
+            this.$message({
+              message: '获取成功',
+              type: 'success'
+            });
+            if(data.data.length != 0){
+              //有数据
+              this.surperTableLabel = Object.keys(data.data[0])
+              this.surperTableData = data.data
+              this.totalSurperTable = data.count
+            } else {
+              this.$message({
+                message: '无数据',
+                type: 'success'
+              });
+            }
+          }
+          this.loadingSurperTable = false
+        })
+      },
+      paginationChange(val){
+        let offsetVal = (val-1)*this.eachPageTable
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingTable = true
+        TaosRestful.selectData(this.tableName, this.theDB, payload,null,null,limit=this.eachPageTable,offset = offsetVal).then(data =>{
+          if(data.res){
+            //成功
+            this.$message({
+              message: '获取成功',
+              type: 'success'
+            });
+            if(data.data.length != 0){
+              //有数据
+              this.tableLabel = Object.keys(data.data[0])
+              this.tableData = data.data
+              this.totalTable = data.count
+            } else {
+              this.$message({
+                message: '无数据',
+                type: 'success'
+              });
+            }
+          }
+          this.loadingTable = false
+        })
+      },
+
       editSurperT(val) {
         console.log(val)
       },
@@ -182,78 +391,41 @@ new Vue({
       deleteT(val) {
         console.log(val)
       },
-      paginationSurperChange(val){
-        let offsetVal = (val-1)*this.eachPageSurperTable
-        let payload = {
-          ip:this.theLink.host,
-          port:this.theLink.port,
-          user:this.theLink.user,
-          password:this.theLink.password
-        }
-        TaosRestful.selectData(this.surperTableName, this.theDBName, payload,null,null,limit=this.eachPageSurperTable,offset = offsetVal).then(data =>{
-          this.totalSurperTable = data.count
-          this.surperTableData = data.data
-          this.surperTableLabel = data.data[0]?Object.keys(data.data[0]):[]
-        })
+      
+      addDB(link){
+        this.addDBDialogLink = link
+        this.addDBDialog = true
       },
-
-      paginationChange(val){
-        let offsetVal = (val-1)*this.eachPageTable
-        let payload = {
-          ip:this.theLink.host,
-          port:this.theLink.port,
-          user:this.theLink.user,
-          password:this.theLink.password
-        }
-        TaosRestful.selectData(this.tableName, this.theDBName, payload,null,null,limit=this.eachPageTable,offset = offsetVal).then(data =>{
-          this.totalTable = data.count
-          this.tableData = data.data
-          this.tableLabel = data.data[0]?Object.keys(data.data[0]):[]
-        })
-      },
-      freshDB(link){
+      deleteDB(link,dbName){
         let payload = {
           ip:link.host,
           port:link.port,
           user:link.user,
           password:link.password
         }
-        TaosRestful.showDatabases(payload).then(data =>{
-          //处理返回的数据库数据
+        this.loadingLinks = true
+        TaosRestful.dropDatabase(dbName, payload).then(data => {
           if(data.res){
-            //连接成功，保存到本地
-            storage.setTheLink({
-              name: link.name, 
-              host: link.host, 
-              port: link.port, 
-              user: link.user, 
-              password: link.password, 
-              dbs: data.data
-            })
-            this.links = storage.getLinks()
-            
-          } else {
-            //连接失败
+            this.loadingLinks = false
+            this.freshDB(payload)
           }
         })
       },
-      addDB(link){
-        this.addDBDialogLink = link
-        this.addDBDialog = true
-      },
       postaddDB(){
-        console.log("postaddDBs", this.addDBForm.name)
         let payload = {
           ip:this.addDBDialogLink.host,
           port:this.addDBDialogLink.port,
           user:this.addDBDialogLink.user,
           password:this.addDBDialogLink.password
         }
+        this.loadingLinks = true
+        this.addDBDialog = false
         if(this.addDBForm.name){
           TaosRestful.createDatabase(this.addDBForm.name, payload).then(data => {
-            console.log(data)
             if(data.res){
               //新增成功
+              this.freshDB(payload)
+              this.loadingLinks = false
               
             }else{
 
@@ -266,3 +438,4 @@ new Vue({
   })
 
 
+  

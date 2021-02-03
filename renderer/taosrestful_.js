@@ -1,14 +1,6 @@
 const axios = require('axios')
 
 module.exports = {
-//    constructor(ip='localhost', port='6041',user='root',password="taosdata",timeout=0) {
-//        this.ip = ip
-//        this.port = port
-//        this.user = user
-//        this.password = password
-//        this.database = 'log'
-//        this.timeout = timeout * 1000
-//    }
    async sendRequest(sqlStr, payload){
     try {   
         let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
@@ -106,10 +98,9 @@ module.exports = {
 //    useDatabase(dbName){
 //     this.database = dbName
 //    },
-//    dropDatabase(dbName,safe=true){
-//     // console.log(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`)
-//     return this.sendRequest(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`)
-//    },
+   dropDatabase(dbName, payload,safe=true){
+    return this.sendRequest(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`, payload)
+   },
    showSuperTables(dbName, payload){
     return this.sendRequest(`SHOW ${dbName}.STABLES`, payload)
    },
