@@ -104,7 +104,8 @@ module.exports = class TaosRestful {
         }
         // console.log(sqlStr)
         return this.sendRequest(sqlStr)
-    }
+   }
+
    useDatabase(dbName){
     this.database = dbName
    }

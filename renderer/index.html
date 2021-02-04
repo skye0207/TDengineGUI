@@ -24,15 +24,15 @@
               <template slot="title">
                 <span>{{link.name}}</span>
                 <div class="iconWrapper3">
-                  <img @click.stop="addDB(link)" class="icon1" src="./img/add.png">
+                  <img @click.stop="addDB(index)" class="icon1" src="./img/add.png">
                   <img @click.stop="freshDB(index)" class="icon1" src="./img/fresh.png">
                   <img class="icon1" src="./img/delete.png">
                 </div>
               </template>
-              <el-menu-item class="menuitem" @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index) in link.dbs" >
+              <el-menu-item :index="db.name" class="menuitem" @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index_) in link.dbs" >
                 <img class="icon11" src="./img/database.png">
                 {{db.name}}
-                <img class="icon111" @click="deleteDB(link, db.name)"  src="./img/delete.png">
+                <img class="icon111" @click.stop="deleteDB(link, db.name, index)"  src="./img/delete.png">
               </el-menu-item>
             </el-submenu>
             
@@ -66,9 +66,9 @@
       </el-dialog>
       <!-- 添加数据库的弹窗 -->
       <el-dialog :visible.sync="addDBDialog" title="添加数据库">
-        <el-form :model="addDBForm" class="linkformstyle">
+        <el-form class="linkformstyle">
           <el-form-item label="名称" label-width="80px">
-            <el-input v-model="addDBForm.name" autocomplete="off"></el-input>
+            <el-input v-model="addDBName" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

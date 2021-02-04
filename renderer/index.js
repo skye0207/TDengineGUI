@@ -11,7 +11,6 @@ new Vue({
         loadingLinks: false,
         drawer: true,
         addLinkDialog: false,
-        addDBDialog:false,
         linkForm: {
           name:"",
           host:"",
@@ -40,10 +39,10 @@ new Vue({
         eachPageSurperTable:8,
         eachPageTable:8,
 
-        addDBDialogLink:{},
-        addDBForm:{
-          name:""
-        },
+        addDBDialogLinkKey:0,
+        addDBName:"",
+        addDBDialog:false,
+
         searchIcon: true,
         freshIcon: true,
         links:[],
@@ -128,6 +127,8 @@ new Vue({
               type: 'success'
             });
             this.links[key].dbs = data.data
+            //TODO展开菜单
+
           } else {
             //连接失败，1.提示 2.删除当前连接 3.重新连接
             //1
@@ -308,7 +309,7 @@ new Vue({
             } else {
               this.$message({
                 message: '无数据',
-                type: 'success'
+                type: 'warning'
               });
             }
           }
@@ -379,6 +380,87 @@ new Vue({
         })
       },
 
+      addDB(key){
+        this.addDBDialogLinkKey = key
+        this.addDBName = ""
+        this.addDBDialog = true
+      },
+      postaddDB(){
+        let key = this.addDBDialogLinkKey
+        let theLink = this.links[key]
+        let payload = {
+          ip:theLink.host,
+          port:theLink.port,
+          user:theLink.user,
+          password:theLink.password
+        }
+       
+        if(this.addDBName){
+          TaosRestful.createDatabase(this.addDBName, payload).then(data => {
+            if(data.res){
+              //新增成功
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
+              this.freshDB(key)
+              this.addDBDialog = false
+            }else{
+              //添加失败
+              this.$message({
+                message: '添加失败',
+                type: 'error'
+              });
+            }
+          })
+        } else{
+          this.$message({
+            message: '请填写内容',
+            type: 'warning'
+          });
+        }
+      },
+      deleteDB(link, dbName, key){
+        this.$confirm('确认删除数据库' + dbName + "吗？")
+        .then(_ => {
+          let payload = {
+            ip:link.host,
+            port:link.port,
+            user:link.user,
+            password:link.password
+          }
+          this.loadingLinks = true
+
+          TaosRestful.dropDatabase(dbName, payload).then(data => {
+
+            if(data.res){
+              //成功
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            } else {
+              this.$message({
+                message: '删除失败',
+                type: 'error'
+              });
+            }
+            this.loadingLinks = false
+            this.freshDB(key)
+          })
+        })
+        .catch(_ => {
+          this.$message({
+            message: '操作已取消',
+            type: 'warning'
+          });
+        });
+    
+        
+      
+      },
+      
+
       editSurperT(val) {
         console.log(val)
       },
@@ -392,47 +474,7 @@ new Vue({
         console.log(val)
       },
       
-      addDB(link){
-        this.addDBDialogLink = link
-        this.addDBDialog = true
-      },
-      deleteDB(link,dbName){
-        let payload = {
-          ip:link.host,
-          port:link.port,
-          user:link.user,
-          password:link.password
-        }
-        this.loadingLinks = true
-        TaosRestful.dropDatabase(dbName, payload).then(data => {
-          if(data.res){
-            this.loadingLinks = false
-            this.freshDB(payload)
-          }
-        })
-      },
-      postaddDB(){
-        let payload = {
-          ip:this.addDBDialogLink.host,
-          port:this.addDBDialogLink.port,
-          user:this.addDBDialogLink.user,
-          password:this.addDBDialogLink.password
-        }
-        this.loadingLinks = true
-        this.addDBDialog = false
-        if(this.addDBForm.name){
-          TaosRestful.createDatabase(this.addDBForm.name, payload).then(data => {
-            if(data.res){
-              //新增成功
-              this.freshDB(payload)
-              this.loadingLinks = false
-              
-            }else{
-
-            }
-          })
-        }
-      }
+     
       
     }
   })
