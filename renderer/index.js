@@ -51,7 +51,7 @@ new Vue({
       }
     },
     methods: {
-      cancelAddLink: function () {
+      cancelAddLink() {
         this.addLinkDialog = false
         //清空表单
         this.linkForm={
@@ -62,8 +62,7 @@ new Vue({
           password:""
         }
       },
-      confirmAddLink: function (event) { 
-       
+      confirmAddLink(event) {    
         //新建连接，先连接，如果成功，将payload+name记入本地
         //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
         let payload = {
@@ -97,18 +96,29 @@ new Vue({
               this.links = storage.getLinks()
             } else {
               //连接失败
+              
             }
             
         }
         )
-        //清空表单
-        this.linkForm={
-          name:"",
-          host:"",
-          port:"",
-          user:"",
-          password:""
-        }
+       
+      },
+      deleteLink(key, linkName){
+        this.$confirm('确认删除连接' + linkName + "吗？")
+        .then(_ => {
+          storage.deleteALink(key)
+          this.links = storage.getLinks()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+        })
+        .catch(_ => {
+          this.$message({
+            message: '操作已取消',
+            type: 'warning'
+          });
+        });
       },
       freshDB(key){
         let theLink = this.links[key]
@@ -154,6 +164,81 @@ new Vue({
             this.addLinkDialog = true
           }
         })
+      },
+      addDB(key){
+        this.addDBDialogLinkKey = key
+        this.addDBName = ""
+        this.addDBDialog = true
+      },
+      postaddDB(){
+        let key = this.addDBDialogLinkKey
+        let theLink = this.links[key]
+        let payload = {
+          ip:theLink.host,
+          port:theLink.port,
+          user:theLink.user,
+          password:theLink.password
+        }
+        if(this.addDBName){
+          TaosRestful.createDatabase(this.addDBName, payload).then(data => {
+            if(data.res){
+              //新增成功
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
+              this.freshDB(key)
+              this.addDBDialog = false
+            }else{
+              //添加失败
+              this.$message({
+                message: '添加失败',
+                type: 'error'
+              });
+            }
+          })
+        } else{
+          this.$message({
+            message: '请填写内容',
+            type: 'warning'
+          });
+        }
+      },
+      deleteDB(link, dbName, key){
+        this.$confirm('确认删除数据库' + dbName + "吗？")
+        .then(_ => {
+          let payload = {
+            ip:link.host,
+            port:link.port,
+            user:link.user,
+            password:link.password
+          }
+          this.loadingLinks = true
+
+          TaosRestful.dropDatabase(dbName, payload).then(data => {
+
+            if(data.res){
+              //成功
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            } else {
+              this.$message({
+                message: '删除失败',
+                type: 'error'
+              });
+            }
+            this.loadingLinks = false
+            this.freshDB(key)
+          })
+        })
+        .catch(_ => {
+          this.$message({
+            message: '操作已取消',
+            type: 'warning'
+          });
+        });
       },
       clearSurperTable(){
         this.surperTableName = ""
@@ -379,86 +464,7 @@ new Vue({
           this.loadingTable = false
         })
       },
-
-      addDB(key){
-        this.addDBDialogLinkKey = key
-        this.addDBName = ""
-        this.addDBDialog = true
-      },
-      postaddDB(){
-        let key = this.addDBDialogLinkKey
-        let theLink = this.links[key]
-        let payload = {
-          ip:theLink.host,
-          port:theLink.port,
-          user:theLink.user,
-          password:theLink.password
-        }
-       
-        if(this.addDBName){
-          TaosRestful.createDatabase(this.addDBName, payload).then(data => {
-            if(data.res){
-              //新增成功
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              });
-              this.freshDB(key)
-              this.addDBDialog = false
-            }else{
-              //添加失败
-              this.$message({
-                message: '添加失败',
-                type: 'error'
-              });
-            }
-          })
-        } else{
-          this.$message({
-            message: '请填写内容',
-            type: 'warning'
-          });
-        }
-      },
-      deleteDB(link, dbName, key){
-        this.$confirm('确认删除数据库' + dbName + "吗？")
-        .then(_ => {
-          let payload = {
-            ip:link.host,
-            port:link.port,
-            user:link.user,
-            password:link.password
-          }
-          this.loadingLinks = true
-
-          TaosRestful.dropDatabase(dbName, payload).then(data => {
-
-            if(data.res){
-              //成功
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-            } else {
-              this.$message({
-                message: '删除失败',
-                type: 'error'
-              });
-            }
-            this.loadingLinks = false
-            this.freshDB(key)
-          })
-        })
-        .catch(_ => {
-          this.$message({
-            message: '操作已取消',
-            type: 'warning'
-          });
-        });
-    
-        
-      
-      },
+     
       
 
       editSurperT(val) {

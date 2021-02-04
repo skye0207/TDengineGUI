@@ -26,7 +26,7 @@
                 <div class="iconWrapper3">
                   <img @click.stop="addDB(index)" class="icon1" src="./img/add.png">
                   <img @click.stop="freshDB(index)" class="icon1" src="./img/fresh.png">
-                  <img class="icon1" src="./img/delete.png">
+                  <img @click.stop="deleteLink(index, link.name)" class="icon1" src="./img/delete.png">
                 </div>
               </template>
               <el-menu-item :index="db.name" class="menuitem" @click="alartDB(link, db.name)" :key="db.name" v-for="(db, index_) in link.dbs" >
@@ -41,7 +41,7 @@
         
       </el-drawer>
       <!-- 新建连接的弹窗 -->
-      <el-dialog :visible.sync="addLinkDialog" title="新建连接">
+      <el-dialog :close-on-click-modal="false" :before-close="cancelAddLink" :visible.sync="addLinkDialog" title="新建连接">
         <el-form :model="linkForm"  :ref="linkForm" class="linkformstyle" label-width="80px">
           <el-form-item label="名称" prop="name">
             <el-input v-model="linkForm.name"></el-input>
