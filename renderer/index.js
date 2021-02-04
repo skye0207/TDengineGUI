@@ -96,7 +96,11 @@ new Vue({
               this.links = storage.getLinks()
             } else {
               //连接失败
-              
+              this.$message({
+                message: '连接失败',
+                type: 'error',
+                duration:1000
+              });
             }
             
         }
@@ -110,13 +114,15 @@ new Vue({
           this.links = storage.getLinks()
           this.$message({
             message: '删除成功',
-            type: 'success'
+            type: 'success',
+            duration:500
           });
         })
         .catch(_ => {
           this.$message({
             message: '操作已取消',
-            type: 'warning'
+            type: 'warning',
+            duration:500
           });
         });
       },
@@ -134,7 +140,8 @@ new Vue({
           if(data.res){
             this.$message({
               message: '刷新成功',
-              type: 'success'
+              type: 'success',
+              duration:1000
             });
             this.links[key].dbs = data.data
             //TODO展开菜单
@@ -144,7 +151,8 @@ new Vue({
             //1
             this.$message({
               message: '连接失败',
-              type: 'error'
+              type: 'error',
+              duration:1000
             });
             //2
             storage.deleteALink(key)
@@ -152,7 +160,8 @@ new Vue({
             //3
             this.$message({
               message: '尝试重新连接',
-              type: 'warning'
+              type: 'warning',
+              duration:1000
             });
             this.linkForm = {
               name: theLink.name,
@@ -185,7 +194,8 @@ new Vue({
               //新增成功
               this.$message({
                 message: '添加成功',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
               this.freshDB(key)
               this.addDBDialog = false
@@ -193,14 +203,16 @@ new Vue({
               //添加失败
               this.$message({
                 message: '添加失败',
-                type: 'error'
+                type: 'error',
+                duration:1000
               });
             }
           })
         } else{
           this.$message({
             message: '请填写内容',
-            type: 'warning'
+            type: 'warning',
+            duration:1000
           });
         }
       },
@@ -221,12 +233,14 @@ new Vue({
               //成功
               this.$message({
                 message: '删除成功',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
             } else {
               this.$message({
                 message: '删除失败',
-                type: 'error'
+                type: 'error',
+                duration:1000
               });
             }
             this.loadingLinks = false
@@ -236,7 +250,8 @@ new Vue({
         .catch(_ => {
           this.$message({
             message: '操作已取消',
-            type: 'warning'
+            type: 'warning',
+            duration:1000
           });
         });
       },
@@ -284,7 +299,8 @@ new Vue({
             //拉取超级表成功
             this.$message({
               message: '刷新成功',
-              type: 'success'
+              type: 'success',
+              duration:1000
             });
             this.surperTables = data.data
           }
@@ -307,7 +323,8 @@ new Vue({
             //拉取表成功
             this.$message({
               message: '刷新成功',
-              type: 'success'
+              type: 'success',
+              duration:1000
             });
             this.tables = data.data
           }
@@ -352,7 +369,8 @@ new Vue({
               //有数据
               this.$message({
                 message: '获取成功',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
               this.surperTableLabel = Object.keys(data.data[0])
               this.surperTableData = data.data
@@ -360,7 +378,8 @@ new Vue({
             } else {
               this.$message({
                 message: '无数据',
-                type: 'warning'
+                type: 'warning',
+                duration:1000
               });
             }
           }
@@ -386,7 +405,8 @@ new Vue({
             if(data.data.length != 0){
               this.$message({
                 message: '获取成功',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
               //有数据
               this.tableLabel = Object.keys(data.data[0])
@@ -395,7 +415,8 @@ new Vue({
             } else {
               this.$message({
                 message: '无数据',
-                type: 'warning'
+                type: 'warning',
+                duration:1000
               });
             }
           }
@@ -417,7 +438,8 @@ new Vue({
             //成功
             this.$message({
               message: '获取成功',
-              type: 'success'
+              type: 'success',
+              duration:1000
             });
             if(data.data.length != 0){
               //有数据
@@ -427,7 +449,8 @@ new Vue({
             } else {
               this.$message({
                 message: '无数据',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
             }
           }
@@ -448,7 +471,8 @@ new Vue({
             //成功
             this.$message({
               message: '获取成功',
-              type: 'success'
+              type: 'success',
+              duration:1000
             });
             if(data.data.length != 0){
               //有数据
@@ -458,7 +482,8 @@ new Vue({
             } else {
               this.$message({
                 message: '无数据',
-                type: 'success'
+                type: 'success',
+                duration:1000
               });
             }
           }
