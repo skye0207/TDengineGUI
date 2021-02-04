@@ -347,19 +347,20 @@ new Vue({
         .then(data =>{
           if(data.res){
             //成功
-            this.$message({
-              message: '获取成功',
-              type: 'success'
-            });
+            
             if(data.data.length != 0){
               //有数据
+              this.$message({
+                message: '获取成功',
+                type: 'success'
+              });
               this.surperTableLabel = Object.keys(data.data[0])
               this.surperTableData = data.data
               this.totalSurperTable = data.count
             } else {
               this.$message({
                 message: '无数据',
-                type: 'success'
+                type: 'warning'
               });
             }
           }
@@ -382,11 +383,11 @@ new Vue({
         TaosRestful.selectData(val.table_name, this.theDB, payload,null,null,limit=this.eachPageTable,offset = '0').then(data =>{
           if(data.res){
             //成功
-            this.$message({
-              message: '获取成功',
-              type: 'success'
-            });
             if(data.data.length != 0){
+              this.$message({
+                message: '获取成功',
+                type: 'success'
+              });
               //有数据
               this.tableLabel = Object.keys(data.data[0])
               this.tableData = data.data
@@ -465,8 +466,6 @@ new Vue({
         })
       },
      
-      
-
       editSurperT(val) {
         console.log(val)
       },
@@ -479,9 +478,7 @@ new Vue({
       deleteT(val) {
         console.log(val)
       },
-      
-     
-      
+   
     }
   })
 
