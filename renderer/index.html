@@ -84,6 +84,7 @@
               <el-container class="tableWrapper">
                 <el-aside class="mainAside" width="200px">
                   <div v-loading="loadingSurperList">
+                    <!-- 超级表列表 -->
                     <el-table
                     size="mini"
                     highlight-current-row
@@ -117,11 +118,48 @@
                 </el-aside>
                 <el-main>
                   <div v-loading="loadingSurperTable">
+                    <!-- 超级表筛选 -->
+                    <el-dialog :close-on-click-modal="false" :before-close="concelSurperTableFilter"	title="筛选条件" :visible.sync="surperTableFilterDialog" >
+                      <el-form  :model="surperTableFilter" label-width="80px">
+                          <el-form-item label="数据项" >
+                            <el-checkbox-group 
+                              v-model="surperTableFilter.fields">
+                              <el-row class="checkboxGroup">
+                                <el-col v-for="label in this.surperTableLabelItems" :key="label" :span="8">
+                                  <el-checkbox class="checkbox" :label="label">{{label}}</el-checkbox>
+                                </el-col>
+                              </el-row>
+                            </el-checkbox-group>
+                          </el-form-item>
+                        </el-form>  
+                        <span slot="footer" class="dialog-footer">
+                          <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
+                          <el-button @click="postSurperTableFilter" size="small">设置</el-button>
+                        </span>
+                    </el-dialog>
+                    <!-- 超级表数据 -->
+                    <el-row class="surperTSearchRow">
+                      <el-col :span="15">
+                        <el-input v-model="surperTSearchText" class="input-with-select" size="small">
+                          <el-select v-model="surperTSearchColumn" slot="prepend" placeholder="请选择">
+                            <el-option v-for="(label, index) in this.surperTableLabelItems" :label="label" :value="label" :key="index"></el-option>
+                          </el-select>
+                          <el-button slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
+                        </el-input>
+                      </el-col>
+                      <el-col :span="3" :offset="1">
+                        <el-button @click="openSurperTableFilterD" size="small" style="width: 100%" icon="el-icon-setting">筛选条件</el-button>
+                      </el-col>
+                      <el-col :span="3" :offset="1">
+                        <el-button @click="selectSurperData(false)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
+                      </el-col>
+                    </el-row>
+                    
                     <el-table
                       size="mini"
                       :data="surperTableData"
                       border
-                      max-height="600"
+                      max-height="500"
                       style="width: 100%">
                       <el-table-column
                         fixed
@@ -138,18 +176,18 @@
                         width="180">
                       </el-table-column>
                     </el-table>
-                    <!-- 分页 -->
+                    <!-- 超级表分页 -->
                     <div class="paginationWrapper">
                       <el-pagination
                         :hide-on-single-page="true"
+                        :current-page.sync="currentPageSurperTable"
                         @current-change	="paginationSurperChange"
                         :page-size="eachPageSurperTable"
                         layout="prev, pager, next"
                         :total="totalSurperTable">
                       </el-pagination>
                     </div>
-                  </div>  
-                  
+                  </div>         
                 </el-main>
               </el-container>
             </el-tab-pane>
@@ -157,6 +195,7 @@
               <el-container class="tableWrapper">
                 <el-aside class="mainAside" width="200px">
                   <div v-loading="loadingTableList">
+                    <!-- 表列表 -->
                     <el-table
                     size="mini"
                     :data="tables"
@@ -189,8 +228,43 @@
                     </el-table>
                   </div>
                 </el-aside>
-                <el-main>
+                <el-main>      
                   <div v-loading="loadingTable">
+                    <el-dialog :close-on-click-modal="false" :before-close="concelTableFilter"	title="筛选条件" :visible.sync="tableFilterDialog">
+                      <el-form  :model="tableFilter" label-width="80px">
+                          <el-form-item label="数据项" >
+                            <el-checkbox-group 
+                              v-model="tableFilter.fields">
+                              <el-row class="checkboxGroup">
+                                <el-col v-for="label in this.tableLabelItems" :key="label" :span="8">
+                                  <el-checkbox class="checkbox" :label="label">{{label}}</el-checkbox>
+                                </el-col>
+                              </el-row>
+                            </el-checkbox-group>
+                          </el-form-item>
+                        </el-form>  
+                        <span slot="footer" class="dialog-footer">
+                          <el-button @click="concelTableFilter" size="small">取消</el-button>
+                          <el-button @click="postTableFilter" size="small">设置</el-button>
+                        </span>
+                    </el-dialog>
+                    <!-- 表数据 -->
+                    <el-row class="surperTSearchRow">
+                      <el-col :span="15">
+                        <el-input v-model="tableSearchText" class="input-with-select" size="small">
+                          <el-select v-model="tableSearchColumn" slot="prepend" placeholder="请选择">
+                            <el-option v-for="(label, index) in this.tableLabelItems" :label="label" :value="label" :key="index"></el-option>
+                          </el-select>
+                          <el-button slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
+                        </el-input>
+                      </el-col>
+                      <el-col :span="3" :offset="1">
+                        <el-button @click="openTableFilterD" size="small" style="width: 100%" icon="el-icon-setting">筛选条件</el-button>
+                      </el-col>
+                      <el-col :span="3" :offset="1">
+                        <el-button @click="selectTData(false)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
+                      </el-col>
+                    </el-row>
                     <el-table
                       size="mini"
                       :data="tableData"
@@ -211,10 +285,12 @@
                       :label="data">
                     </el-table-column>
                     </el-table>
+                    <!-- 表分页 -->
                     <div class="paginationWrapper">
                       <el-pagination
-                          @current-change	="paginationChange"
+                          @current-change	="paginationSurperChange"
                           :hide-on-single-page="true"
+                          :current-page.sync="currentPageTable"
                           :page-size="eachPageTable"
                           layout="prev, pager, next"
                           :total="totalTable">

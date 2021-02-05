@@ -151,3 +151,18 @@ html, body, div {
     color: #606266;
 }
 
+.checkboxGroup{
+    margin: 10px 0 0 10px;
+}
+
+.surperTSearchRow{
+    margin: 20px 0 20px 0;
+}
+
+.el-select {
+    width: 130px;
+}
+
+.input-with-select .el-input-group__prepend {
+    background-color: #fff;
+}

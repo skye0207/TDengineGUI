@@ -1,5 +1,6 @@
 const TaosRestful = require('./taosrestful_.js')
 const storage = require('./localDataStore.js')
+const { TouchBarScrubber } = require('electron')
 
 new Vue({
     el: '#app',
@@ -19,11 +20,29 @@ new Vue({
           password:"",
         },
         activeTab:"1",
+
+        surperTableFilter:{
+          fields:[],
+        },
+        surperTableFilterCopy:{},
+        tableFilter:{
+          fields:[],
+        },
+        tableFilterCopy:{},
+
+        tableSearchText:"",
+        tableSearchColumn:"",
+        tableFilterDialog:false,
+
+        surperTSearchText: "",
+        surperTSearchColumn: "",
+        surperTableFilterDialog:false,
         
         surperTables: [], //超级表list
         surperTableData: [],
         surperTableName: "",
         totalSurperTable: 0,
+        surperTableLabelItems: [],
         surperTableLabel: [],
         loadingSurperList: false,
         loadingSurperTable: false,
@@ -32,12 +51,15 @@ new Vue({
         tableData: [],
         tableName: "",
         totalTable: 0,
+        tableLabelItems: [],
         tableLabel: [],
         loadingTableList: false,
         loadingTable: false,
 
         eachPageSurperTable:8,
+        currentPageSurperTable:1,
         eachPageTable:8,
+        currentPageTable:1,
 
         addDBDialogLinkKey:0,
         addDBName:"",
@@ -349,22 +371,55 @@ new Vue({
             break;
      } 
       },
-      handleClickSurperT(val) {
+      openSurperTableFilterD(){
+        this.surperTableFilterDialog = true
+        this.surperTableFilterCopy = JSON.parse(JSON.stringify(this.surperTableFilter))
+      },
+      concelSurperTableFilter(){
+        this.$message({
+          message: '取消操作',
+          type: 'warning',
+          duration:1000
+        });
+        this.surperTableFilterDialog = false
+        this.surperTableFilter = this.surperTableFilterCopy
+      },
+      postSurperTableFilter(){
+        this.surperTableFilterDialog = false
+        this.selectSurperData(false)
+      },
+      openTableFilterD(){
+        this.tableFilterDialog = true
+        this.tableFilterCopy = JSON.parse(JSON.stringify(this.tableFilter))
+      },
+      concelTableFilter(){
+        this.$message({
+          message: '取消操作',
+          type: 'warning',
+          duration:1000
+        });
+        this.tableFilterDialog = false
+        this.tableFilter = this.tableFilterCopy
+      },
+      postTableFilter(){
+        this.tableFilterDialog = false
+        this.selectTData(false)
+      },
+      selectSurperData(isFirst){
+        let offsetVal = (this.currentPageSurperTable-1)*this.eachPageSurperTable
         let payload = {
           ip:this.theLink.host,
           port:this.theLink.port,
           user:this.theLink.user,
           password:this.theLink.password
         }
-        this.clearSurperTable()
-        this.surperTableName = val.name
         this.loadingSurperTable = true
-        
-        TaosRestful.selectData(val.name, this.theDB, payload,null,null,limit=this.eachPageSurperTable,offset = '0')
+        //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
+        TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields=this.surperTableFilter.fields, where=null
+          , limit=this.eachPageSurperTable, offset=offsetVal, desc =null, startTime=null, endTime=null)
         .then(data =>{
           if(data.res){
             //成功
-            
             if(data.data.length != 0){
               //有数据
               this.$message({
@@ -372,7 +427,11 @@ new Vue({
                 type: 'success',
                 duration:1000
               });
+              if(isFirst){
+                this.surperTableLabelItems = Object.keys(data.data[0])
+              }
               this.surperTableLabel = Object.keys(data.data[0])
+              this.surperTableFilter.fields =  Object.keys(data.data[0])
               this.surperTableData = data.data
               this.totalSurperTable = data.count
             } else {
@@ -387,108 +446,70 @@ new Vue({
 
         })
       },
-      handleClickT(val) {
+      selectTData(isFirst){
+        let offsetVal = (this.currentPageTable-1)*this.eachPageTable
         let payload = {
           ip:this.theLink.host,
           port:this.theLink.port,
           user:this.theLink.user,
           password:this.theLink.password
         }
+        this.loadingTable = true
+        //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
+        TaosRestful.selectData(this.tableName, this.theDB, payload, fields=this.tableFilter.fields, where=null
+          , limit=this.eachPageTable, offset=offsetVal, desc =null, startTime=null, endTime=null)
+        .then(data =>{
+          if(data.res){
+            //成功
+            if(data.data.length != 0){
+              //有数据
+              this.$message({
+                message: '获取成功',
+                type: 'success',
+                duration:1000
+              });
+              if(isFirst){
+                this.tableLabelItems = Object.keys(data.data[0])
+              }
+              this.tableLabel = Object.keys(data.data[0])
+              this.tableFilter.fields =  Object.keys(data.data[0])
+              this.tableData = data.data
+              this.totalTable = data.count
+            } else {
+              this.$message({
+                message: '无数据',
+                type: 'warning',
+                duration:1000
+              });
+            }
+          }
+          this.loadingTable = false
+        })
+      },
+      surTableFilter(){
+        this.selectSurperData(0)
+      },
+      handleClickSurperT(val) {
+        this.clearSurperTable()
+        this.surperTableName = val.name
+        this.selectSurperData(true)
+        this.surperTableFilter={
+          fields:[]
+        }
+      },   
+      handleClickT(val) {
         this.clearTable()
         this.tableName = val.table_name
-        this.loadingTable = true
-        
-
-        TaosRestful.selectData(val.table_name, this.theDB, payload,null,null,limit=this.eachPageTable,offset = '0').then(data =>{
-          if(data.res){
-            //成功
-            if(data.data.length != 0){
-              this.$message({
-                message: '获取成功',
-                type: 'success',
-                duration:1000
-              });
-              //有数据
-              this.tableLabel = Object.keys(data.data[0])
-              this.tableData = data.data
-              this.totalTable = data.count
-            } else {
-              this.$message({
-                message: '无数据',
-                type: 'warning',
-                duration:1000
-              });
-            }
-          }
-          this.loadingTable = false
-        })
-      },
-      paginationSurperChange(val){
-        let offsetVal = (val-1)*this.eachPageSurperTable
-        let payload = {
-          ip:this.theLink.host,
-          port:this.theLink.port,
-          user:this.theLink.user,
-          password:this.theLink.password
+        this.selectTData(true)
+        this.tableFilter={
+          fields:[]
         }
-        this.loadingSurperTable = true
-
-        TaosRestful.selectData(this.surperTableName, this.theDB, payload,null,null,limit=this.eachPageSurperTable,offset = offsetVal).then(data =>{
-          if(data.res){
-            //成功
-            this.$message({
-              message: '获取成功',
-              type: 'success',
-              duration:1000
-            });
-            if(data.data.length != 0){
-              //有数据
-              this.surperTableLabel = Object.keys(data.data[0])
-              this.surperTableData = data.data
-              this.totalSurperTable = data.count
-            } else {
-              this.$message({
-                message: '无数据',
-                type: 'success',
-                duration:1000
-              });
-            }
-          }
-          this.loadingSurperTable = false
-        })
       },
-      paginationChange(val){
-        let offsetVal = (val-1)*this.eachPageTable
-        let payload = {
-          ip:this.theLink.host,
-          port:this.theLink.port,
-          user:this.theLink.user,
-          password:this.theLink.password
-        }
-        this.loadingTable = true
-        TaosRestful.selectData(this.tableName, this.theDB, payload,null,null,limit=this.eachPageTable,offset = offsetVal).then(data =>{
-          if(data.res){
-            //成功
-            this.$message({
-              message: '获取成功',
-              type: 'success',
-              duration:1000
-            });
-            if(data.data.length != 0){
-              //有数据
-              this.tableLabel = Object.keys(data.data[0])
-              this.tableData = data.data
-              this.totalTable = data.count
-            } else {
-              this.$message({
-                message: '无数据',
-                type: 'success',
-                duration:1000
-              });
-            }
-          }
-          this.loadingTable = false
-        })
+      paginationSurperChange(isFirst){
+        this.selectSurperData(false)
+      },
+      paginationChange(){
+        this.selectTData(false)
       },
      
       editSurperT(val) {
