@@ -12,6 +12,7 @@
      
       <!-- 连接列表 -->
       <el-drawer
+        :before-close="beforeClosedrawer"
         title="数据库"
         :visible.sync="drawer"
         direction="ltr">
@@ -119,7 +120,7 @@
                 <el-main>
                   <div v-loading="loadingSurperTable">
                     <!-- 超级表筛选 -->
-                    <el-dialog :close-on-click-modal="false" :before-close="concelSurperTableFilter"	title="筛选条件" :visible.sync="surperTableFilterDialog" >
+                    <el-dialog :close-on-click-modal="false" :before-close="concelSurperTableFilter" title="筛选条件" :visible.sync="surperTableFilterDialog">
                       <el-form  :model="surperTableFilter" label-width="80px">
                           <el-form-item label="数据项" >
                             <el-checkbox-group 
@@ -131,6 +132,20 @@
                               </el-row>
                             </el-checkbox-group>
                           </el-form-item>
+                          <el-form-item label="时间范围" >
+                            <div class="block datePickerWrapper">
+                              <el-date-picker
+                                size="small"
+                                v-model="surperTableFilter.surperDateRange"
+                                value-format="yyyy-MM-dd hh:mm:ss"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                align="right">
+                              </el-date-picker>
+                            </div>
+                          </el-form-item>
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
@@ -140,11 +155,11 @@
                     <!-- 超级表数据 -->
                     <el-row class="surperTSearchRow">
                       <el-col :span="15">
-                        <el-input v-model="surperTSearchText" class="input-with-select" size="small">
-                          <el-select v-model="surperTSearchColumn" slot="prepend" placeholder="请选择">
+                        <el-input v-model="surperTableFilter.surperTSearchText" class="input-with-select" size="small">
+                          <el-select v-model="surperTableFilter.surperTSearchColumn" slot="prepend" placeholder="请选择">
                             <el-option v-for="(label, index) in this.surperTableLabelItems" :label="label" :value="label" :key="index"></el-option>
                           </el-select>
-                          <el-button slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
+                          <el-button @click="searchSurperText" slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
                         </el-input>
                       </el-col>
                       <el-col :span="3" :offset="1">
@@ -242,6 +257,20 @@
                               </el-row>
                             </el-checkbox-group>
                           </el-form-item>
+                          <el-form-item label="时间范围" >
+                            <div class="block datePickerWrapper">
+                              <el-date-picker
+                                size="small"
+                                v-model="tableFilter.dateRange"
+                                value-format="yyyy-MM-dd hh:mm:ss"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                align="right">
+                              </el-date-picker>
+                            </div>
+                          </el-form-item>
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelTableFilter" size="small">取消</el-button>
@@ -251,11 +280,11 @@
                     <!-- 表数据 -->
                     <el-row class="surperTSearchRow">
                       <el-col :span="15">
-                        <el-input v-model="tableSearchText" class="input-with-select" size="small">
-                          <el-select v-model="tableSearchColumn" slot="prepend" placeholder="请选择">
+                        <el-input v-model="tableFilter.tableSearchText" class="input-with-select" size="small">
+                          <el-select v-model="tableFilter.tableSearchColumn" slot="prepend" placeholder="请选择">
                             <el-option v-for="(label, index) in this.tableLabelItems" :label="label" :value="label" :key="index"></el-option>
                           </el-select>
-                          <el-button slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
+                          <el-button @click="searchTableText" slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
                         </el-input>
                       </el-col>
                       <el-col :span="3" :offset="1">

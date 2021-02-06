@@ -143,16 +143,18 @@ module.exports = {
    },
    //查询数据
    selectData(tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null){
+    //首先查询一次，获取表的整体情况
     return this.disTable(tableName,dbName, payload).then(res=>{
         let primaryKey ='ts'
         if(res.res && res.data.length>0){
+            //获取第一项，时间戳
             primaryKey = res.data[0].Field
         }else{
             return {'res':false,'msg':'distable error','code':99}
         }
 
+        //组装where子句  //TODO
         where = this.timeWhere(primaryKey,where,startTime,endTime)
-        
         let sqlStr = 'SELECT '
         let fieldStr= '*'
         if(fields && fields.length>0){
@@ -177,6 +179,7 @@ module.exports = {
             sqlStr +=` OFFSET ${offset} `
         }
 
+        //把总数数出来
         if(limit != null){
             return this.sendRequest(sqlStr, payload).then(res=>{
                 return this.countDataIn(tableName,dbName,primaryKey, payload ,where,startTime,endTime).then(count=>{

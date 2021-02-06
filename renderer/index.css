@@ -166,3 +166,7 @@ html, body, div {
 .input-with-select .el-input-group__prepend {
     background-color: #fff;
 }
+
+.datePickerWrapper{
+    margin-top: 5px;
+}

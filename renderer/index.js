@@ -21,21 +21,26 @@ new Vue({
         },
         activeTab:"1",
 
+        surperTableFilterCopy:{},
+        
         surperTableFilter:{
           fields:[],
+          surperDateRange:[],
+          surperTSearchText: "",
+          surperTSearchColumn: "",
         },
-        surperTableFilterCopy:{},
+        
+        tableFilterCopy:{}, 
         tableFilter:{
           fields:[],
+          dateRange:[],
+          tableSearchText:"",
+          tableSearchColumn:"",
         },
-        tableFilterCopy:{},
+        surperWhere:"",
+        tableWhere:"",
 
-        tableSearchText:"",
-        tableSearchColumn:"",
         tableFilterDialog:false,
-
-        surperTSearchText: "",
-        surperTSearchColumn: "",
         surperTableFilterDialog:false,
         
         surperTables: [], //超级表list
@@ -73,6 +78,17 @@ new Vue({
       }
     },
     methods: {
+      beforeClosedrawer(){
+        if(this.theDB){
+          this.drawer = false
+        } else {
+          this.$message({
+            message: '请选择数据库',
+            type: 'warning',
+            duration:1000
+          });
+        }
+      },
       cancelAddLink() {
         this.addLinkDialog = false
         //清空表单
@@ -277,18 +293,6 @@ new Vue({
           });
         });
       },
-      clearSurperTable(){
-        this.surperTableName = ""
-        this.totalSurperTable = 0
-        this.surperTableData = []
-        this.surperTableLabel = []
-      },
-      clearTable(){
-        this.tableName = ""
-        this.totalTable = 0
-        this.tableData = []
-        this.tableLabel = []
-      },
       alartDB(link,dbName){        
         //切换数据库前先清空表
         this.surperTables = []  
@@ -305,8 +309,34 @@ new Vue({
         this.activeTab = "1"
         this.freshSurperTables()
       },
+      clearSurperTable(){
+        this.surperTableName = ""
+        this.totalSurperTable = 0
+        this.surperTableData = []
+        this.surperTableLabel = []
+        this.surperTableFilter={
+          fields:[],
+          surperDateRange:[],
+          surperTSearchText: "",
+          surperTSearchColumn: "",
+        }
+      },
+      clearTable(){
+        this.tableName = ""
+        this.totalTable = 0
+        this.tableData = []
+        this.tableLabel = []
+        this.tableFilter={
+          fields:[],
+          dateRange:[],
+          tableSearchText:"",
+          tableSearchColumn:"",
+        }
+      },
       freshSurperTables(){
+        //清理超级表列表
         this.surperTables = []  
+        //清理选中的超级表和具体数据
         this.clearSurperTable()
         
         let payload = {
@@ -325,12 +355,20 @@ new Vue({
               duration:1000
             });
             this.surperTables = data.data
+          } else {
+            this.$message({
+              message: '刷新失败',
+              type: 'error',
+              duration:1000
+            });
           }
           this.loadingSurperList = false
-        })
+        }) 
       },
       freshTables(){
+        //清理表列表
         this.tables = []
+        //清理选中的表和具体数据
         this.clearTable()
 
         let payload = {
@@ -349,6 +387,12 @@ new Vue({
               duration:1000
             });
             this.tables = data.data
+          }else{
+            this.$message({
+              message: '刷新失败',
+              type: 'error',
+              duration:1000
+            });
           }
           this.loadingTableList = false
         })
@@ -405,6 +449,49 @@ new Vue({
         this.tableFilterDialog = false
         this.selectTData(false)
       },
+      searchSurperText(){
+        if(this.surperTableFilter.surperTSearchColumn && this.surperTableFilter.surperTSearchText.trim()){
+          // this.surperWhere = this.surperTSearchColumn + " > " + this.surperTSearchText.trim()+"%"
+          // this.clearSurperTable()
+          let surperTSearchText = this.surperTableFilter.surperTSearchText.trim()
+          if(!isNaN(surperTSearchText)){
+            this.surperWhere =this.surperTableFilter.surperTSearchColumn + " = " + surperTSearchText
+          } else {
+            this.surperWhere =this.surperTableFilter.surperTSearchColumn + " = '" + surperTSearchText +"'"
+          }
+          
+          this.selectSurperData(false)
+        } else {
+          this.surperWhere = ""
+          this.$message({
+            message: '请填写正确',
+            type: 'warning',
+            duration:1000
+          });
+          this.selectSurperData(false)
+        }
+      },
+      searchTableText(){
+        if(this.tableFilter.tableSearchColumn && this.tableFilter.tableSearchText.trim()){
+
+          let tableSearchText = this.tableFilter.tableSearchText.trim()
+          if(!isNaN(tableSearchText)){
+            this.tableWhere =this.tableFilter.tableSearchColumn + " = " + tableSearchText
+          } else {
+            this.tableWhere =this.tableFilter.tableSearchColumn + " = '" + tableSearchText +"'"
+          }
+          
+          this.selectTData(false)
+        } else {
+          this.tableWhere = ""
+          this.$message({
+            message: '请填写正确',
+            type: 'warning',
+            duration:1000
+          });
+          this.selectTData(false)
+        }
+      },
       selectSurperData(isFirst){
         let offsetVal = (this.currentPageSurperTable-1)*this.eachPageSurperTable
         let payload = {
@@ -414,9 +501,21 @@ new Vue({
           password:this.theLink.password
         }
         this.loadingSurperTable = true
+
+        //处理时间范围
+        let startTime = null
+        let endTime = null
+        if(this.surperTableFilter.surperDateRange.length > 0){
+          startTime = this.surperTableFilter.surperDateRange[0];
+          endTime = this.surperTableFilter.surperDateRange[1];
+        }
+        if(!this.surperTableFilter.surperTSearchText.trim()){
+          this.surperWhere = ""
+        }
+
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
-        TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields=this.surperTableFilter.fields, where=null
-          , limit=this.eachPageSurperTable, offset=offsetVal, desc =null, startTime=null, endTime=null)
+        TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields=this.surperTableFilter.fields, where=this.surperWhere
+          , limit=this.eachPageSurperTable, offset=offsetVal, desc =null, startTime=startTime, endTime=endTime)
         .then(data =>{
           if(data.res){
             //成功
@@ -435,12 +534,21 @@ new Vue({
               this.surperTableData = data.data
               this.totalSurperTable = data.count
             } else {
+              this.surperTableLabel = []
+              this.surperTableData = data.data
+              this.totalSurperTable = data.count
               this.$message({
                 message: '无数据',
                 type: 'warning',
                 duration:1000
               });
             }
+          }else{
+            this.$message({
+              message: '获取失败',
+              type: 'error',
+              duration:1000
+            });
           }
           this.loadingSurperTable = false
 
@@ -455,9 +563,21 @@ new Vue({
           password:this.theLink.password
         }
         this.loadingTable = true
+
+        //处理时间范围
+        let startTime = null
+        let endTime = null
+        if(this.tableFilter.dateRange.length > 0){
+          startTime = this.tableFilter.dateRange[0];
+          endTime = this.tableFilter.dateRange[1];
+        }
+        if(!this.tableFilter.tableSearchText.trim()){
+          this.tableWhere = ""
+        }
+
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
-        TaosRestful.selectData(this.tableName, this.theDB, payload, fields=this.tableFilter.fields, where=null
-          , limit=this.eachPageTable, offset=offsetVal, desc =null, startTime=null, endTime=null)
+        TaosRestful.selectData(this.tableName, this.theDB, payload, fields=this.tableFilter.fields, where=this.tableWhere
+          , limit=this.eachPageTable, offset=offsetVal, desc =null, startTime=startTime, endTime=endTime)
         .then(data =>{
           if(data.res){
             //成功
@@ -493,17 +613,12 @@ new Vue({
         this.clearSurperTable()
         this.surperTableName = val.name
         this.selectSurperData(true)
-        this.surperTableFilter={
-          fields:[]
-        }
       },   
       handleClickT(val) {
         this.clearTable()
         this.tableName = val.table_name
+        
         this.selectTData(true)
-        this.tableFilter={
-          fields:[]
-        }
       },
       paginationSurperChange(isFirst){
         this.selectSurperData(false)
