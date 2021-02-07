@@ -2,6 +2,7 @@ const axios = require('axios')
 
 module.exports = {
    async sendRequest(sqlStr, payload){
+    console.log(sqlStr)
     try {   
         let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
             auth: {
@@ -182,7 +183,7 @@ module.exports = {
         //把总数数出来
         if(limit != null){
             return this.sendRequest(sqlStr, payload).then(res=>{
-                return this.countDataIn(tableName,dbName,primaryKey, payload ,where,startTime,endTime).then(count=>{
+                return this.countDataIn(tableName,dbName,primaryKey, payload ,where).then(count=>{
                     res.count=count
                     return new Promise((resolve, reject)=>{resolve(res)})
                 })
