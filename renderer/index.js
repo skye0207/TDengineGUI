@@ -61,9 +61,9 @@ new Vue({
         loadingTableList: false,
         loadingTable: false,
 
-        eachPageSurperTable:8,
+        eachPageSurperTable:10,
         currentPageSurperTable:1,
-        eachPageTable:8,
+        eachPageTable:10,
         currentPageTable:1,
 
         addDBDialogLinkKey:0,
@@ -492,7 +492,21 @@ new Vue({
           this.selectTData(false)
         }
       },
-      selectSurperData(isFirst){
+      selectSurperData(isFirst, isResetPage){
+
+        //处理时间范围
+        let startTime = null
+        let endTime = null
+        if(this.surperTableFilter.surperDateRange.length > 0){
+          startTime = this.surperTableFilter.surperDateRange[0];
+          endTime = this.surperTableFilter.surperDateRange[1];
+        }
+
+        //是否需要重置分页
+        if(isResetPage){
+          this.currentPageSurperTable = 1
+        }
+
         let offsetVal = (this.currentPageSurperTable-1)*this.eachPageSurperTable
         let payload = {
           ip:this.theLink.host,
@@ -502,16 +516,10 @@ new Vue({
         }
         this.loadingSurperTable = true
 
-        //处理时间范围
-        let startTime = null
-        let endTime = null
-        if(this.surperTableFilter.surperDateRange.length > 0){
-          startTime = this.surperTableFilter.surperDateRange[0];
-          endTime = this.surperTableFilter.surperDateRange[1];
-        }
-        if(!this.surperTableFilter.surperTSearchText.trim()){
-          this.surperWhere = ""
-        }
+        //处理查询数据
+        // if(!this.surperTableFilter.surperTSearchText.trim()){
+        //   this.surperWhere = ""
+        // }
 
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
         TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields=this.surperTableFilter.fields, where=this.surperWhere
@@ -554,7 +562,20 @@ new Vue({
 
         })
       },
-      selectTData(isFirst){
+      selectTData(isFirst, isResetPage=false){
+
+        //处理时间范围
+        let startTime = null
+        let endTime = null
+        if(this.tableFilter.dateRange.length > 0){
+          startTime = this.tableFilter.dateRange[0];
+          endTime = this.tableFilter.dateRange[1];
+        }
+
+        if(isResetPage){
+          this.currentPageTable = 1
+        }
+
         let offsetVal = (this.currentPageTable-1)*this.eachPageTable
         let payload = {
           ip:this.theLink.host,
@@ -564,16 +585,9 @@ new Vue({
         }
         this.loadingTable = true
 
-        //处理时间范围
-        let startTime = null
-        let endTime = null
-        if(this.tableFilter.dateRange.length > 0){
-          startTime = this.tableFilter.dateRange[0];
-          endTime = this.tableFilter.dateRange[1];
-        }
-        if(!this.tableFilter.tableSearchText.trim()){
-          this.tableWhere = ""
-        }
+        // if(!this.tableFilter.tableSearchText.trim()){
+        //   this.tableWhere = ""
+        // }
 
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
         TaosRestful.selectData(this.tableName, this.theDB, payload, fields=this.tableFilter.fields, where=this.tableWhere

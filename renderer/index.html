@@ -132,19 +132,14 @@
                               </el-row>
                             </el-checkbox-group>
                           </el-form-item>
-                          <el-form-item label="时间范围" >
-                            <div class="block datePickerWrapper">
-                              <el-date-picker
-                                size="small"
-                                v-model="surperTableFilter.surperDateRange"
-                                value-format="yyyy-MM-dd hh:mm:ss"
-                                type="datetimerange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                align="right">
-                              </el-date-picker>
-                            </div>
+                          <el-form-item label="每页数目">
+                            <el-radio-group v-model="eachPageSurperTable">
+                              <el-row class="checkboxGroup2">
+                                <el-radio :label="10">10</el-radio>
+                                <el-radio :label="15">15</el-radio>
+                                <el-radio :label="20">20</el-radio>
+                              </el-row>
+                            </el-radio-group>
                           </el-form-item>
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
@@ -154,19 +149,39 @@
                     </el-dialog>
                     <!-- 超级表数据 -->
                     <el-row class="surperTSearchRow">
-                      <el-col :span="15">
-                        <el-input v-model="surperTableFilter.surperTSearchText" class="input-with-select" size="small">
+                      <el-col :span="2" class="dataPackerLabel">时间范围: </el-col>
+                      <el-col :span="13">
+                        <!-- <el-form  :model="surperTableFilter" label-width="80px"> -->
+                          <!-- <el-form-item label="时间范围" > -->
+                            <div class="datePickerWrapper">
+                              <el-date-picker
+                                @change="selectSurperData(false,true)"
+                                style="width: 100%;"
+                                size="small"
+                                v-model="surperTableFilter.surperDateRange"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                align="right">
+                              </el-date-picker>
+                            </div>
+                          <!-- </el-form-item> -->
+                        <!-- </el-form> -->
+
+                        <!-- <el-input v-model="surperTableFilter.surperTSearchText" class="input-with-select" size="small">
                           <el-select v-model="surperTableFilter.surperTSearchColumn" slot="prepend" placeholder="请选择">
                             <el-option v-for="(label, index) in this.surperTableLabelItems" :label="label" :value="label" :key="index"></el-option>
                           </el-select>
                           <el-button @click="searchSurperText" slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
-                        </el-input>
+                        </el-input> -->
                       </el-col>
-                      <el-col :span="3" :offset="1">
+                      <el-col :span="4" class="freshDataBtn">
                         <el-button @click="openSurperTableFilterD" size="small" style="width: 100%" icon="el-icon-setting">筛选条件</el-button>
                       </el-col>
-                      <el-col :span="3" :offset="1">
-                        <el-button @click="selectSurperData(false)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
+                      <el-col :span="4" class="freshDataBtn">
+                        <el-button @click="selectSurperData(false, true)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
                       </el-col>
                     </el-row>
                     
@@ -257,19 +272,15 @@
                               </el-row>
                             </el-checkbox-group>
                           </el-form-item>
-                          <el-form-item label="时间范围" >
-                            <div class="block datePickerWrapper">
-                              <el-date-picker
-                                size="small"
-                                v-model="tableFilter.dateRange"
-                                value-format="yyyy-MM-dd hh:mm:ss"
-                                type="datetimerange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                align="right">
-                              </el-date-picker>
-                            </div>
+                          <el-form-item label="每页数目">
+                            
+                            <el-radio-group v-model="eachPageTable">
+                              <el-row class="checkboxGroup2">
+                                <el-radio :label="10">10</el-radio>
+                                <el-radio :label="15">15</el-radio>
+                                <el-radio :label="20">20</el-radio>
+                              </el-row>
+                            </el-radio-group>
                           </el-form-item>
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
@@ -279,19 +290,37 @@
                     </el-dialog>
                     <!-- 表数据 -->
                     <el-row class="surperTSearchRow">
-                      <el-col :span="15">
+
+                      <el-col :span="2" class="dataPackerLabel">时间范围: </el-col>
+                      <el-col :span="13">
+                        <div class="datePickerWrapper">
+                          <el-date-picker
+                            @change="selectTData(false, true)"
+                            style="width: 100%;"
+                            size="small"
+                            v-model="tableFilter.dateRange"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            align="right">
+                          </el-date-picker>
+                        </div>
+                      </el-col>
+                      <!-- <el-col :span="15">
                         <el-input v-model="tableFilter.tableSearchText" class="input-with-select" size="small">
                           <el-select v-model="tableFilter.tableSearchColumn" slot="prepend" placeholder="请选择">
                             <el-option v-for="(label, index) in this.tableLabelItems" :label="label" :value="label" :key="index"></el-option>
                           </el-select>
                           <el-button @click="searchTableText" slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
                         </el-input>
-                      </el-col>
+                      </el-col> -->
                       <el-col :span="3" :offset="1">
                         <el-button @click="openTableFilterD" size="small" style="width: 100%" icon="el-icon-setting">筛选条件</el-button>
                       </el-col>
                       <el-col :span="3" :offset="1">
-                        <el-button @click="selectTData(false)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
+                        <el-button @click="selectTData(false, true)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
                       </el-col>
                     </el-row>
                     <el-table

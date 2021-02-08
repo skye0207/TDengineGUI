@@ -155,6 +155,10 @@ html, body, div {
     margin: 10px 0 0 10px;
 }
 
+.checkboxGroup2{
+    margin: 12px 0 0 10px;
+}
+
 .surperTSearchRow{
     margin: 20px 0 20px 0;
 }
@@ -167,6 +171,12 @@ html, body, div {
     background-color: #fff;
 }
 
-.datePickerWrapper{
-    margin-top: 5px;
+.freshDataBtn{
+    padding-left: 10px;
+}
+
+.dataPackerLabel{
+    line-height: 34px;
+    font-size: 14px;
+    color: #606266;
 }
