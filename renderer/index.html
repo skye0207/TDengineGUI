@@ -358,7 +358,17 @@
                 </el-main>
               </el-container>
             </el-tab-pane>
-            <el-tab-pane label="控制台" name="3">控制台</el-tab-pane>
+            <el-tab-pane label="控制台" name="3">
+              <div class="consoleWrapper">
+                <el-input placeholder="请输入内容" v-model="consoleInput">
+                  <template slot="prepend">SQL:</template>
+                  <el-button slot="append" icon="el-icon-search" @click="sendSQL"></el-button>
+                </el-input>
+                <div class="resultPlace">
+                  <div class="resultPlaceTitle">Response</div>
+                </div>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="数据库属性" name="4">数据库属性</el-tab-pane>
           </el-tabs>
           

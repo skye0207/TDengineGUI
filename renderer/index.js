@@ -75,6 +75,8 @@ new Vue({
         links:[],
         theLink:{}, //当前连接
         theDB: "", //当前数据库
+
+        consoleInput: ""
       }
     },
     methods: {
@@ -643,7 +645,6 @@ new Vue({
       paginationChange(){
         this.selectTData(false)
       },
-     
       editSurperT(val) {
         console.log(val)
       },
@@ -656,6 +657,9 @@ new Vue({
       deleteT(val) {
         console.log(val)
       },
+      sendSQL(){
+        console.log(this.consoleInput)
+      }
    
     }
   })

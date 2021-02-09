@@ -180,3 +180,22 @@ html, body, div {
     font-size: 14px;
     color: #606266;
 }
+
+.consoleWrapper{
+    height: 90%;
+    width:100%;
+}
+
+.resultPlace{
+    height: 92%;
+    width: 100%;
+    border: 1px solid #DCDFE6;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.resultPlaceTitle{
+    color: #DCDFE6;
+    margin-top: 7px;
+    margin-left: 10px;
+}
