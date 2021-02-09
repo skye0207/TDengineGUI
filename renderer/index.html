@@ -149,7 +149,7 @@
                     </el-dialog>
                     <!-- 超级表数据 -->
                     <el-row class="surperTSearchRow">
-                      <el-col :span="2" class="dataPackerLabel">时间范围: </el-col>
+                      <el-col :span="3" class="dataPackerLabel">时间范围: </el-col>
                       <el-col :span="13">
                         <!-- <el-form  :model="surperTableFilter" label-width="80px"> -->
                           <!-- <el-form-item label="时间范围" > -->
@@ -291,7 +291,7 @@
                     <!-- 表数据 -->
                     <el-row class="surperTSearchRow">
 
-                      <el-col :span="2" class="dataPackerLabel">时间范围: </el-col>
+                      <el-col :span="3" class="dataPackerLabel">时间范围: </el-col>
                       <el-col :span="13">
                         <div class="datePickerWrapper">
                           <el-date-picker
@@ -316,10 +316,10 @@
                           <el-button @click="searchTableText" slot="append" icon="el-icon-search" size="small" class="surperTSearchBtn"></el-button>
                         </el-input>
                       </el-col> -->
-                      <el-col :span="3" :offset="1">
+                      <el-col :span="4" class="freshDataBtn">
                         <el-button @click="openTableFilterD" size="small" style="width: 100%" icon="el-icon-setting">筛选条件</el-button>
                       </el-col>
-                      <el-col :span="3" :offset="1">
+                      <el-col :span="4" class="freshDataBtn">
                         <el-button @click="selectTData(false, true)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
                       </el-col>
                     </el-row>
@@ -346,7 +346,7 @@
                     <!-- 表分页 -->
                     <div class="paginationWrapper">
                       <el-pagination
-                          @current-change	="paginationSurperChange"
+                          @current-change	="paginationChange"
                           :hide-on-single-page="true"
                           :current-page.sync="currentPageTable"
                           :page-size="eachPageTable"

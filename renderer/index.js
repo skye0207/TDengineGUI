@@ -497,7 +497,7 @@ new Vue({
         //处理时间范围
         let startTime = null
         let endTime = null
-        if(this.surperTableFilter.surperDateRange.length > 0){
+        if(this.surperTableFilter.surperDateRange){
           startTime = this.surperTableFilter.surperDateRange[0];
           endTime = this.surperTableFilter.surperDateRange[1];
         }
@@ -567,7 +567,7 @@ new Vue({
         //处理时间范围
         let startTime = null
         let endTime = null
-        if(this.tableFilter.dateRange.length > 0){
+        if(this.tableFilter.dateRange){
           startTime = this.tableFilter.dateRange[0];
           endTime = this.tableFilter.dateRange[1];
         }
@@ -610,6 +610,9 @@ new Vue({
               this.tableData = data.data
               this.totalTable = data.count
             } else {
+              this.tableLabel = []
+              this.tableData = data.data
+              this.totalTable = data.count
               this.$message({
                 message: '无数据',
                 type: 'warning',
@@ -634,7 +637,7 @@ new Vue({
         
         this.selectTData(true)
       },
-      paginationSurperChange(isFirst){
+      paginationSurperChange(){
         this.selectSurperData(false)
       },
       paginationChange(){
