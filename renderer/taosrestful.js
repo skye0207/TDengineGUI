@@ -137,6 +137,10 @@ module.exports = class TaosRestful {
     let dbN = dbName ? dbName : this.database
     return this.sendRequest(`DESCRIBE ${dbN}.${tableName}`)
    }
+   dropTable(tableName,dbName=null,safe=false){
+    let dbN = dbName ? dbName : this.database
+    return this.sendRequest(`DROP TABLE ${safe?'IF EXISTS':''} ${dbN}.${tableName}`)
+   }
 
    insertData(tableName,data,dbName=null){
     let dbN = dbName ? dbName : this.database

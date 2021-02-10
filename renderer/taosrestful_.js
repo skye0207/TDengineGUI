@@ -122,6 +122,9 @@ module.exports = {
    disTable(tableName,dbName, payload){
     return this.sendRequest(`DESCRIBE ${dbName}.${tableName}`, payload )
    },
+   dropTable(tableName,dbName, payload,safe=false){
+    return this.sendRequest(`DROP TABLE ${safe?'IF EXISTS':''} ${dbName}.${tableName}`, payload )
+   },
 
    insertData(tableName,data,dbName=null){
     let dbN = dbName ? dbName : this.database
@@ -226,9 +229,9 @@ module.exports = {
    rawSql(sqlStr){
         return this.sendRequest(sqlStr)
    },
-   rawSqlWithDB(sqlStr,dbName=null){
-        let dbN = dbName ? dbName : this.database
-        return this.sendRequest(`USE ${dbN}`).then(a =>{
+   rawSqlWithDB(sqlStr,dbName){
+        // let dbN = dbName ? dbName : this.database
+        return this.sendRequest(`USE ${dbName}`).then(a =>{
             return this.sendRequest(sqlStr)
         })
     }
