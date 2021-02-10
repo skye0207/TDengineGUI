@@ -125,13 +125,15 @@ module.exports = class TaosRestful {
     // console.log(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`)
     return this.sendRequest(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`)
    }
-   showSuperTables(dbName){
-    return this.sendRequest(`SHOW ${dbName}.STABLES`)
-   }
-   showTables(dbName=null){
+   showSuperTables(dbName=null,like=null){
     let dbN = dbName ? dbName : this.database
-    // console.log(`SHOW ${dbN}.TABLES`)
-    return this.sendRequest(`SHOW ${dbN}.TABLES`)
+    let likeStr = like?` LIKE '%${like}%'`:''
+    return this.sendRequest(`SHOW ${dbN}.STABLES ${likeStr}`)
+   }
+   showTables(dbName=null,like=null){
+    let dbN = dbName ? dbName : this.database
+    let likeStr = like?` LIKE '%${like}%'`:''
+    return this.sendRequest(`SHOW ${dbN}.TABLES ${likeStr}`)
    }
    disTable(tableName,dbName=null){
     let dbN = dbName ? dbName : this.database

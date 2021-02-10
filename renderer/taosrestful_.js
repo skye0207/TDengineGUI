@@ -113,11 +113,13 @@ module.exports = {
    dropDatabase(dbName, payload,safe=true){
     return this.sendRequest(`DROP DATABASE ${safe?'IF EXISTS':''} ${dbName}`, payload)
    },
-   showSuperTables(dbName, payload){
-    return this.sendRequest(`SHOW ${dbName}.STABLES`, payload)
+   showSuperTables(dbName, payload,like=null){
+    let likeStr = like?` LIKE '%${like}%'`:''
+    return this.sendRequest(`SHOW ${dbName}.STABLES  ${likeStr}`, payload)
    },
-   showTables(dbName, payload){
-    return this.sendRequest(`SHOW ${dbName}.TABLES`, payload)
+   showTables(dbName, payload,like=null){
+    let likeStr = like?` LIKE '%${like}%'`:''
+    return this.sendRequest(`SHOW ${dbName}.TABLES  ${likeStr}`, payload)
    },
    disTable(tableName,dbName, payload){
     return this.sendRequest(`DESCRIBE ${dbName}.${tableName}`, payload )
