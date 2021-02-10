@@ -35,7 +35,7 @@ module.exports = {
         return this.sendRequest('SHOW DATABASES', payload)
    },
    testConnect(payload){
-        return this.sendRequest('SHOW DATABASES', payload).then(a =>
+        return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a =>
             {
                 if (a.res === false && a.code === -1){
                     return false
@@ -45,6 +45,17 @@ module.exports = {
             }
         )
    },
+   getVersion(){
+        return this.sendRequest('SELECT SERVER_VERSION()').then(a =>
+            {
+                if (a.res === false){
+                    return 'unkown'
+                }else{
+                    return a.data[0]['server_version()']
+                }
+            }
+        )
+    },
    //添加数据库
    createDatabase(dbName, payload,safe=true,keep= null,update=false,comp=null,replica=null,quorum=null,blocks=null){
         let sqlStr = 'CREATE DATABASE '
@@ -214,6 +225,12 @@ module.exports = {
     },  
    rawSql(sqlStr){
         return this.sendRequest(sqlStr)
-   }
+   },
+   rawSqlWithDB(sqlStr,dbName=null){
+        let dbN = dbName ? dbName : this.database
+        return this.sendRequest(`USE ${dbN}`).then(a =>{
+            return this.sendRequest(sqlStr)
+        })
+    }
 }
 

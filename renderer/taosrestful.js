@@ -44,12 +44,24 @@ module.exports = class TaosRestful {
         return this.sendRequest('SHOW DATABASES')
    }
    testConnect(){
-        return this.sendRequest('SHOW DATABASES').then(a =>
+        return this.sendRequest('SELECT SERVER_VERSION()').then(a =>
             {
                 if (a.res === false && a.code === -1){
                     return false
                 }else{
                     return true
+                }
+            }
+        )
+    }
+
+   getVersion(){
+        return this.sendRequest('SELECT SERVER_VERSION()').then(a =>
+            {
+                if (a.res === false){
+                    return a.msg
+                }else{
+                    return a.data[0]['server_version()']
                 }
             }
         )
@@ -240,8 +252,14 @@ module.exports = class TaosRestful {
 
 
    }
-   rawSql(sqlStr){
-    return this.sendRequest(sqlStr)
-   }
+    rawSql(sqlStr){
+        return this.sendRequest(sqlStr)
+    }
+    rawSqlWithDB(sqlStr,dbName=null){
+        let dbN = dbName ? dbName : this.database
+        return this.sendRequest(`USE ${dbN}`).then(a =>{
+            return this.sendRequest(sqlStr)
+        })
+    }
 }
 
