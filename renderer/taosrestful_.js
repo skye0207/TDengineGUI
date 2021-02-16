@@ -86,7 +86,7 @@ module.exports = {
         return this.sendRequest(sqlStr, payload)
    },
    
-//    alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
+// alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
 //         let sqlStr = 'ALTER DATABASE '
 //         sqlStr += dbName
 //         if(keep != null){

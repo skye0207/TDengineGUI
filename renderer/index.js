@@ -76,6 +76,11 @@ new Vue({
         theLink:{}, //当前连接
         theDB: "", //当前数据库
 
+        SuperTdialog: false,
+        SuperTdialogText: "",
+        Tdialog: false,
+        TdialogText: "",
+
         consoleInput: ""
       }
     },
@@ -310,6 +315,83 @@ new Vue({
         this.drawer = false
         this.activeTab = "1"
         this.freshSurperTables()
+      },
+      searchSurperTList(){
+        this.SuperTdialog = false
+        this.surperTables = []  
+        this.clearSurperTable()
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingSurperList = true
+        TaosRestful.showSuperTables(this.theDB, payload, like=this.SuperTdialogText).then(data =>{
+          if(data.res){
+            //拉取超级表成功
+            this.$message({
+              message: '查找成功',
+              type: 'success',
+              duration:1000
+            });
+            this.surperTables = data.data
+          } else {
+            this.$message({
+              message: '没有结果',
+              type: 'error',
+              duration:1000
+            });
+            this.freshSurperTables()
+          }
+          this.SuperTdialogText = ""
+          this.loadingSurperList = false
+        }) 
+
+      },
+      freshSurperTList(){
+        this.surperTables = []  
+        this.clearSurperTable()
+        this.freshSurperTables()
+      },
+      searchTList(){
+        this.Tdialog = false
+        this.tables = []
+        this.clearTable()
+
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        this.loadingTableList = true
+        TaosRestful.showTables(this.theDB, payload, like=this.TdialogText).then(data =>{
+          if(data.res){
+            //拉取表成功
+            this.$message({
+              message: '查找成功',
+              type: 'success',
+              duration:1000
+            });
+            this.tables = data.data
+          }else{
+            this.$message({
+              message: '没有结果',
+              type: 'error',
+              duration:1000
+            });
+            this.freshTables()
+
+          }
+          this.TdialogText = ""
+          this.loadingTableList = false
+        })
+      },
+      freshTList(){
+        this.tables = []
+        this.clearTable()
+        this.freshTables()
       },
       clearSurperTable(){
         this.surperTableName = ""
@@ -629,15 +711,18 @@ new Vue({
         this.selectSurperData(0)
       },
       handleClickSurperT(val) {
-        this.clearSurperTable()
-        this.surperTableName = val.name
-        this.selectSurperData(true)
+        if(val){
+          this.clearSurperTable()
+          this.surperTableName = val.name
+          this.selectSurperData(true)
+        }
       },   
       handleClickT(val) {
-        this.clearTable()
-        this.tableName = val.table_name
-        
-        this.selectTData(true)
+        if(val){
+          this.clearTable()
+          this.tableName = val.table_name   
+          this.selectTData(true)
+        }
       },
       paginationSurperChange(){
         this.selectSurperData(false)
@@ -659,6 +744,14 @@ new Vue({
       },
       sendSQL(){
         console.log(this.consoleInput)
+      },
+      closeSuperTdialog(){
+        this.SuperTdialogText = ""
+        this.SuperTdialog = false
+      },
+      closeTdialog(){
+        this.TdialogText = ""
+        this.Tdialog = false
       }
    
     }

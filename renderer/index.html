@@ -98,10 +98,14 @@
                       <template slot="header" slot-scope="scope">   
                         <span>超级表名</span>
                         <div class="iconWrapper">
-                          <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
-                          <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
-                          <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
-                          <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
+                          <div class="iconWrapper_" @click.stop="SuperTdialog=true">
+                            <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
+                            <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
+                          </div>
+                          <div class="iconWrapper_" @click="freshSurperTList">
+                            <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
+                            <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
+                          </div>
                         </div>
                       </template>
                       <template slot-scope="scope">
@@ -115,6 +119,20 @@
                       
                     </el-table-column>
                     </el-table>
+                    <el-dialog
+                      title="搜索超级表"
+                      :visible.sync="SuperTdialog"
+                      width="30%"
+                      :before-close="closeSuperTdialog">
+                      <el-input
+                        v-model="SuperTdialogText">
+                        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                      </el-input>
+                      <span slot="footer" class="dialog-footer">
+                        <el-button size="small" @click="closeSuperTdialog">取 消</el-button>
+                        <el-button size="small" type="primary" @click="searchSurperTList">确 定</el-button>
+                      </span>
+                    </el-dialog>
                   </div>
                 </el-aside>
                 <el-main>
@@ -238,11 +256,14 @@
                         <template slot="header" slot-scope="scope">   
                           <span>表名</span>
                           <div class="iconWrapper"> 
-                            
-                            <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
-                            <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
-                            <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
-                            <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
+                            <div class="iconWrapper_ " @click="Tdialog=true">
+                              <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
+                              <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
+                            </div>
+                            <div class="iconWrapper_" @click="freshTList">
+                              <img class="icon1" v-if="freshIcon" @mouseenter="freshIcon = false" src="./img/fresh_.png">
+                              <img class="icon1" v-else src="./img/fresh.png" @mouseleave="freshIcon = true">
+                            </div>
                           </div>
                         </template>
                         <template slot-scope="scope">
@@ -256,6 +277,20 @@
                         
                       </el-table-column>
                     </el-table>
+                    <el-dialog
+                      title="搜索表"
+                      :visible.sync="Tdialog"
+                      width="30%"
+                      :before-close="closeTdialog">
+                      <el-input
+                        v-model="TdialogText">
+                        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                      </el-input>
+                      <span slot="footer" class="dialog-footer">
+                        <el-button size="small" @click="closeTdialog">取 消</el-button>
+                        <el-button size="small" type="primary" @click="searchTList">确 定</el-button>
+                      </span>
+                    </el-dialog>
                   </div>
                 </el-aside>
                 <el-main>      
