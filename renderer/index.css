@@ -203,3 +203,14 @@ html, body, div {
 .iconWrapper_{
     display: inline;
 }
+
+.switchStyle{
+    margin-left: 12px;
+    position: relative;
+    bottom: 3px;
+}
+
+.el-switch__label{
+    height: auto !important;
+}
+

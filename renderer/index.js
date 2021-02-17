@@ -5,7 +5,20 @@ const { TouchBarScrubber } = require('electron')
 new Vue({
     el: '#app',
     mounted: function () {
-      this.$data.links = storage.getLinks()
+      let links = storage.getLinks()
+      for(let i = 0,len=links.length; i < len; i++) {
+        let payload = {
+          ip:links[i].host,
+          port:links[i].port,
+          user:links[i].user,
+          password:links[i].password
+        }
+        TaosRestful.getVersion(payload).then(data => {
+          links[i].version = data
+          this.$data.links =links 
+        })
+      }
+        
     },
     data: function() {
       return { 
@@ -81,6 +94,8 @@ new Vue({
         Tdialog: false,
         TdialogText: "",
 
+        surperTorder:"ASC",
+        Torder:"ASC",
         consoleInput: ""
       }
     },
@@ -607,7 +622,7 @@ new Vue({
 
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
         TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields=this.surperTableFilter.fields, where=this.surperWhere
-          , limit=this.eachPageSurperTable, offset=offsetVal, desc =null, startTime=startTime, endTime=endTime)
+          , limit=this.eachPageSurperTable, offset=offsetVal, desc=this.surperTorder, startTime=startTime, endTime=endTime)
         .then(data =>{
           if(data.res){
             //成功
@@ -675,7 +690,7 @@ new Vue({
 
         //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
         TaosRestful.selectData(this.tableName, this.theDB, payload, fields=this.tableFilter.fields, where=this.tableWhere
-          , limit=this.eachPageTable, offset=offsetVal, desc =null, startTime=startTime, endTime=endTime)
+          , limit=this.eachPageTable, offset=offsetVal, desc=this.Torder, startTime=startTime, endTime=endTime)
         .then(data =>{
           if(data.res){
             //成功

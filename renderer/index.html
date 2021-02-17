@@ -14,6 +14,7 @@
       <el-drawer
         :before-close="beforeClosedrawer"
         title="数据库"
+        size="380"
         :visible.sync="drawer"
         direction="ltr">
         <div v-loading="loadingLinks">
@@ -24,6 +25,7 @@
             <el-submenu :index="String(index)" :key="index" v-for="(link, index) in links">
               <template slot="title">
                 <span>{{link.name}}</span>
+                <el-tag type="success" size="mini" v-if="link.version">{{link.version}}</el-tag>
                 <div class="iconWrapper3">
                   <img @click.stop="addDB(index)" class="icon1" src="./img/add.png">
                   <img @click.stop="freshDB(index)" class="icon1" src="./img/fresh.png">
@@ -159,6 +161,15 @@
                               </el-row>
                             </el-radio-group>
                           </el-form-item>
+                          <el-switch
+                            class="switchStyle"
+                            v-model="surperTorder"
+                            active-value="ASC"
+                            inactive-value="DESC"
+                            active-text="时间倒序"
+                            inactive-text="时间正序">
+                          </el-switch>
+
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
@@ -317,6 +328,14 @@
                               </el-row>
                             </el-radio-group>
                           </el-form-item>
+                          <el-switch
+                          class="switchStyle"
+                          v-model="Torder"
+                          active-value="ASC"
+                          inactive-value="DESC"
+                          active-text="时间倒序"
+                          inactive-text="时间正序">
+                        </el-switch>
                         </el-form>  
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelTableFilter" size="small">取消</el-button>
@@ -418,6 +437,10 @@
             </div>
             <div class="footText">当前连接:</div> 
             <div class="footText greyText">{{theLink.name}}</div> 
+            <div class="footText">端口:</div> 
+            <div class="footText greyText">{{theLink.port}}</div> 
+            <div class="footText">用户名:</div> 
+            <div class="footText greyText">{{theLink.user}}</div> 
             <div class="footText">数据库:</div> 
             <div class="footText greyText">{{theDB}}</div> 
         </el-footer>

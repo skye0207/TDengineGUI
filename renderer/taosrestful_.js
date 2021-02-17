@@ -45,8 +45,9 @@ module.exports = {
             }
         )
    },
-   getVersion(){
-        return this.sendRequest('SELECT SERVER_VERSION()').then(a =>
+   getVersion(payload){
+        //获取服务器版本    
+        return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a =>
             {
                 if (a.res === false){
                     return 'unkown'
@@ -85,7 +86,6 @@ module.exports = {
         // console.log(sqlStr)
         return this.sendRequest(sqlStr, payload)
    },
-   
 // alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
 //         let sqlStr = 'ALTER DATABASE '
 //         sqlStr += dbName
@@ -127,7 +127,6 @@ module.exports = {
    dropTable(tableName,dbName, payload,safe=false){
     return this.sendRequest(`DROP TABLE ${safe?'IF EXISTS':''} ${dbName}.${tableName}`, payload )
    },
-
    insertData(tableName,data,dbName=null){
     let dbN = dbName ? dbName : this.database
     let fields = ''
@@ -186,7 +185,7 @@ module.exports = {
             sqlStr +=` WHERE ${where} `
         }
         if(desc != null){
-            sqlStr +=` ORDER BY ${desc} DESC `
+            sqlStr +=` ORDER BY ${primaryKey} ${desc} `
         }
 
         if(limit != null){
