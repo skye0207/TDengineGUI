@@ -114,8 +114,8 @@
                         <img class="icon1" src="./img/file.png">
                         <span class="surperTables">{{ scope.row.name }}</span>
                         <div class="iconWrapper2">
-                          <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png">
-                          <!-- <img class="icon1" @click="deleteSurperT(scope.row.name)" src="./img/delete.png"> -->
+                          <!-- <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png"> -->
+                          <img class="icon1" @click.stop="deleteSurperT(scope.row.name)" src="./img/delete.png">
                         </div>
                       </template>
                       
@@ -281,8 +281,8 @@
                           <img class="icon1" src="./img/file.png">
                           <span  class="surperTables">{{ scope.row.table_name }}</span>
                           <div class="iconWrapper2">
-                            <img class="icon1" @click="editT" src="./img/edit.png">
-                            <!-- <img class="icon1" @click="deleteT" src="./img/delete.png"> -->
+                            <!-- <img class="icon1" @click="editT" src="./img/edit.png"> -->
+                            <img class="icon1" @click.stop="deleteT(scope.row.table_name)" src="./img/delete.png">
                           </div>
                         </template>
                         

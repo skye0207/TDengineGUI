@@ -749,13 +749,89 @@ new Vue({
         console.log(val)
       },
       deleteSurperT(val) {
-        console.log(val)
+        this.$confirm('确认删除超级表' + val + "吗？")
+        .then(_ => {
+          let payload = {
+            ip:this.theLink.host,
+            port:this.theLink.port,
+            user:this.theLink.user,
+            password:this.theLink.password
+          }
+          this.loadingSurperList = true
+
+          //TODO没测试过
+          TaosRestful.dropTable(val, this.theDB, payload).then(data => {
+
+            if(data.res){
+              //成功
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                duration:500
+              });
+            } else {
+              this.$message({
+                message: '删除失败',
+                type: 'error',
+                duration:500
+              });
+            }
+            this.loadingSurperList = false
+            this.freshSurperTables()
+          })
+          
+        })
+        .catch(_ => {
+          this.$message({
+            message: '操作已取消',
+            type: 'warning',
+            duration:500
+          });
+        });
       },
       editT(val) {
         console.log(val)
       },
       deleteT(val) {
-        console.log(val)
+        this.$confirm('确认删除表' + val + "吗？")
+        .then(_ => {
+          let payload = {
+            ip:this.theLink.host,
+            port:this.theLink.port,
+            user:this.theLink.user,
+            password:this.theLink.password
+          }
+          this.loadingTableList = true
+
+          //TODO没测试过
+          TaosRestful.dropTable(val, this.theDB, payload).then(data => {
+
+            if(data.res){
+              //成功
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                duration:500
+              });
+            } else {
+              this.$message({
+                message: '删除失败',
+                type: 'error',
+                duration:500
+              });
+            }
+            this.loadingTableList = false
+            this.freshTables()
+          })
+          
+        })
+        .catch(_ => {
+          this.$message({
+            message: '操作已取消',
+            type: 'warning',
+            duration:500
+          });
+        });
       },
       sendSQL(){
         console.log(this.consoleInput)
