@@ -22,7 +22,7 @@ npm run make 生成在out文件夹下
 - [x] 显示服务器版本号（名称后标签）
 - [ ] 控制台运行sql命令并显示结果
 - [x] 增加数据排序（时间正序或倒序）开关选项
-- [ ] 删除超级表（表）功能
+- [x] 删除超级表（表）功能
 - [x] 状态栏显示连接信息（ip,port,用户名）
 - [ ] 添加数据库界面添加可选属性字段(keep,update,comp,replica,quorum,blocks)
 - [ ] 编译window,linux mac的可执行版本，并release 1.0
@@ -49,4 +49,4 @@ npm run make 生成在out文件夹下
 项目截图:
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/8.45.08.png)
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/8.45.44.png)
-![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/8.46.06.png)
+![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/10.42.35.png)
