@@ -214,3 +214,9 @@ html, body, div {
     height: auto !important;
 }
 
+.addDBswitchStyle{
+    position: relative;
+    top: 6px;
+}
+
+

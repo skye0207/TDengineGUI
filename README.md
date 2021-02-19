@@ -24,7 +24,7 @@ npm run make 生成在out文件夹下
 - [x] 增加数据排序（时间正序或倒序）开关选项
 - [x] 删除超级表（表）功能
 - [x] 状态栏显示连接信息（ip,port,用户名）
-- [ ] 添加数据库界面添加可选属性字段(keep,update,comp,replica,quorum,blocks)
+- [x] 添加数据库界面添加可选属性字段(keep,update,comp,replica,quorum,blocks)
 - [ ] 编译window,linux mac的可执行版本，并release 1.0
 - [ ] 完善说明文档
 

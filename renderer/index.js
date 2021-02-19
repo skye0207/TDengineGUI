@@ -80,8 +80,14 @@ new Vue({
         currentPageTable:1,
 
         addDBDialogLinkKey:0,
-        addDBName:"",
         addDBDialog:false,
+        addDBname:"",
+        addDBcomp:"",
+        addDBreplica:"",
+        addDBkeep:"",
+        addDBupdate:false,
+        addDBquorum:"",
+        addDBblocks:"",
 
         searchIcon: true,
         freshIcon: true,
@@ -96,7 +102,12 @@ new Vue({
 
         surperTorder:"ASC",
         Torder:"ASC",
-        consoleInput: ""
+        consoleInput: "",
+        marks: {
+          0: '0',
+          365: '365',
+          36500: '36500'
+        }
       }
     },
     methods: {
@@ -236,8 +247,15 @@ new Vue({
       },
       addDB(key){
         this.addDBDialogLinkKey = key
-        this.addDBName = ""
         this.addDBDialog = true
+
+        this.addDBname = ""
+        this.addDBcomp = ""
+        this.addDBreplica = ""
+        this.addDBkeep = ""
+        this.addDBupdate = false
+        this.addDBquorum = ""
+        this.addDBblocks = ""
       },
       postaddDB(){
         let key = this.addDBDialogLinkKey
@@ -248,8 +266,18 @@ new Vue({
           user:theLink.user,
           password:theLink.password
         }
-        if(this.addDBName){
-          TaosRestful.createDatabase(this.addDBName, payload).then(data => {
+        if(this.addDBname){
+          if(this.addDBreplica && this.addDBquorum){
+            if(this.addDBreplica < this.addDBquorum){
+              this.$message({
+                message: 'replica应大于等于quorum',
+                type: 'error',
+                duration:1000
+              });
+              return 
+            }
+          }
+          TaosRestful.createDatabase(this.addDBname, payload,safe=true,keep= this.addDBkeep,update=this.addDBupdate,comp=this.addDBcomp, replica=this.addDBreplica,quorum=this.addDBquorum,blocks=this.addDBblocks).then(data => {
             if(data.res){
               //新增成功
               this.$message({

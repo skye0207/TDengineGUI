@@ -9,7 +9,6 @@
     <script src="../node_modules/vue/dist/vue.js"></script>
     <script src="../node_modules/element-ui/lib/index.js"></script>
     <div id="app">
-     
       <!-- 连接列表 -->
       <el-drawer
         :before-close="beforeClosedrawer"
@@ -44,6 +43,7 @@
         
       </el-drawer>
       <!-- 新建连接的弹窗 -->
+
       <el-dialog :close-on-click-modal="false" :before-close="cancelAddLink" :visible.sync="addLinkDialog" title="新建连接">
         <el-form :model="linkForm"  :ref="linkForm" class="linkformstyle" label-width="80px">
           <el-form-item label="名称" prop="name">
@@ -69,9 +69,45 @@
       </el-dialog>
       <!-- 添加数据库的弹窗 -->
       <el-dialog :visible.sync="addDBDialog" title="添加数据库">
-        <el-form class="linkformstyle">
-          <el-form-item label="名称" label-width="80px">
-            <el-input v-model="addDBName" autocomplete="off"></el-input>
+        <el-form class="linkformstyle" label-width="80px" size="small">
+          <el-form-item label="名称" :rules="[
+          { required: true, message: '名称不能为空'}
+        ]">
+            <el-input v-model="addDBname" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="comp" label-width="80px">
+            <el-select v-model="addDBcomp" placeholder="文件压缩度">
+              <el-option label="0" value="0"></el-option>
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="replica" label-width="80px">
+            <el-select v-model="addDBreplica" placeholder="数据库副本数">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+              <el-option label="3" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="keep" label-width="80px">
+            <el-input-number v-model="addDBkeep" :min="3650"	:max="365000" controls-position="right"></el-input-number>
+          </el-form-item>
+          <el-form-item label="update" label-width="80px">
+            <el-switch
+              class="addDBswitchStyle"
+              size="small"
+              v-model="addDBupdate">
+            </el-switch>
+          </el-form-item>
+          <el-form-item label="quorum" label-width="80px">
+            <el-select v-model="addDBquorum" placeholder="写入确认数">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+              <el-option label="3" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="blocks" label-width="80px">
+            <el-input-number v-model="addDBblocks" :min="3"	:max="1000" controls-position="right"></el-input-number>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

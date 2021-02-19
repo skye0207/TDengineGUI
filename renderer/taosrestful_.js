@@ -65,22 +65,22 @@ module.exports = {
         }
         sqlStr += dbName
 
-        if(keep != null){
+        if(keep){
             sqlStr += ` KEEP ${keep}`
         }
-        if(comp != null){
+        if(comp){
             sqlStr += ` COMP ${comp}`
         }
-        if(replica != null) {
+        if(replica) {
             sqlStr += ` REPLICA ${replica}`
         }
-        if(quorum != null){
+        if(quorum){
             sqlStr += ` QUORUM ${quorum}`
         }
-        if(blocks != null){
+        if(blocks){
             sqlStr += ` BLOCKS ${blocks}`
         }
-        if(update != null){
+        if(update){
             sqlStr += ` UPDATE 1`
         }
         // console.log(sqlStr)
