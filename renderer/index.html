@@ -452,10 +452,11 @@
               <div class="consoleWrapper">
                 <el-input placeholder="请输入内容" v-model="consoleInput">
                   <template slot="prepend">SQL:</template>
-                  <el-button slot="append" icon="el-icon-search" @click="sendSQL"></el-button>
+                  <el-button slot="append" icon="el-icon-s-promotion" @click="sendSQL"></el-button>
                 </el-input>
                 <div class="resultPlace">
-                  <div class="resultPlaceTitle">Response</div>
+                  <!-- <el-input :rows='1000' type="textarea" placeholder="运行结果" v-model="consoleResult" :disabled="true"></el-input> -->
+                  <div  style="height:100%;overflow-y:auto" class="resultPlaceTitle">{{consoleResult}}</div>
                 </div>
               </div>
             </el-tab-pane>

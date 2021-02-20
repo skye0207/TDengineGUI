@@ -227,13 +227,13 @@ module.exports = {
             }
         })
     },  
-   rawSql(sqlStr){
-        return this.sendRequest(sqlStr)
+   rawSql(sqlStr,payload){
+        return this.sendRequest(sqlStr,payload)
    },
-   rawSqlWithDB(sqlStr,dbName){
+   rawSqlWithDB(sqlStr,dbName,payload){
         // let dbN = dbName ? dbName : this.database
-        return this.sendRequest(`USE ${dbName}`).then(a =>{
-            return this.sendRequest(sqlStr)
+        return this.sendRequest(`USE ${dbName}`,payload).then(a =>{
+            return this.sendRequest(sqlStr,payload)
         })
     }
 }

@@ -23,6 +23,7 @@ new Vue({
     data: function() {
       return { 
         dbInfo:'',
+        consoleResult:'',
         loadingLinks: false,
         drawer: true,
         addLinkDialog: false,
@@ -891,7 +892,29 @@ new Vue({
         });
       },
       sendSQL(){
-        console.log(this.consoleInput)
+        let payload = {
+          ip:this.theLink.host,
+          port:this.theLink.port,
+          user:this.theLink.user,
+          password:this.theLink.password
+        }
+        // console.log(this.theDB)
+        TaosRestful.rawSqlWithDB(this.consoleInput,this.theDB,payload).then(data => {
+          if(data.res){
+            // let info = ''
+            // info += `数据数量:&nbsp;&nbsp;${data.count}<br/>`
+            // info += `数据列:&nbsp;&nbsp;${data.head}<br/>`
+            // info += `数据:&nbsp;&nbsp;${data.data}<br/>`
+            this.consoleResult = data
+          } else {
+            this.$message({
+              message: data.msg,
+              type: 'error',
+              duration:1000
+            });
+          }
+          
+        })
       },
       closeSuperTdialog(){
         this.SuperTdialogText = ""
