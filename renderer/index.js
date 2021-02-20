@@ -905,6 +905,11 @@ new Vue({
             // info += `数据数量:&nbsp;&nbsp;${data.count}<br/>`
             // info += `数据列:&nbsp;&nbsp;${data.head}<br/>`
             // info += `数据:&nbsp;&nbsp;${data.data}<br/>`
+            this.$message({
+              message: '执行成功',
+              type: 'success',
+              duration:500
+            });
             this.consoleResult = data
           } else {
             this.$message({
