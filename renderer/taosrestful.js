@@ -89,7 +89,7 @@ module.exports = class TaosRestful {
         if(blocks != null){
             sqlStr += ` BLOCKS ${blocks}`
         }
-        if(update != null){
+        if(update){
             sqlStr += ` UPDATE 1`
         }
         // console.log(sqlStr)
@@ -230,8 +230,8 @@ module.exports = class TaosRestful {
         if(where){
             sqlStr +=` WHERE ${where} `
         }
-        if(desc != null){
-            sqlStr +=` ORDER BY ${desc} DESC `
+        if(desc === 'DESC'){
+            sqlStr +=` ORDER BY ${primaryKey} ${desc} `
         }
 
         if(limit != null){

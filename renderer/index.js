@@ -22,6 +22,7 @@ new Vue({
     },
     data: function() {
       return { 
+        dbInfo:'',
         loadingLinks: false,
         drawer: true,
         addLinkDialog: false,
@@ -343,8 +344,36 @@ new Vue({
           });
         });
       },
+      makeDbInfo(dbs,dbName){
+        console.log(dbs)
+        let info = '无法获取数据库信息'
+        dbs.forEach(item => {
+          if(item['name'] == dbName){
+            info = `数据库名:&nbsp;&nbsp;${dbName}<br/>`
+            info += `创建时间:&nbsp;&nbsp;${item['created_time']}<br/>`
+            info += `可更新:&nbsp;&nbsp;${item['update'] == 0?'否':'是'}<br/>`
+            info += `cache(MB):&nbsp;&nbsp;${item['cache(MB)']}<br/>`
+            info += `cachelast:&nbsp;&nbsp;${item['cachelast']}<br/>`
+            info += `comp:&nbsp;&nbsp;${item['comp']}<br/>`
+            info += `days:&nbsp;&nbsp;${item['days']}<br/>`
+            info += `fsync:&nbsp;&nbsp;${item['fsync']}<br/>`
+            info += `keep0,keep1,keep(D):&nbsp;&nbsp;${item['keep0,keep1,keep(D)']}<br/>`
+            info += `maxrows:&nbsp;&nbsp;${item['maxrows']}<br/>`
+            info += `minrows:&nbsp;&nbsp;${item['minrows']}<br/>`
+            info += `ntables:&nbsp;&nbsp;${item['ntables']}<br/>`
+            info += `quorum:&nbsp;&nbsp;${item['quorum']}<br/>`
+            info += `replica:&nbsp;&nbsp;${item['replica']}<br/>`
+            info += `status:&nbsp;&nbsp;${item['status']}<br/>`
+            info += `vgroups:&nbsp;&nbsp;${item['vgroups']}<br/>`
+            info += `wallevel:&nbsp;&nbsp;${item['wallevel']}<br/>`
+            info += `precision:&nbsp;&nbsp;${item['precision']}<br/>`
+          }
+        })
+        return info
+      },
       alartDB(link,dbName){        
         //切换数据库前先清空表
+        this.dbInfo=this.makeDbInfo(link.dbs,dbName)
         this.surperTables = []  
         this.clearSurperTable()
         this.tables = []

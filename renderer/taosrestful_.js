@@ -184,7 +184,7 @@ module.exports = {
         if(where){
             sqlStr +=` WHERE ${where} `
         }
-        if(desc != null){
+        if(desc === 'DESC'){
             sqlStr +=` ORDER BY ${primaryKey} ${desc} `
         }
 

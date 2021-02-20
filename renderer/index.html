@@ -202,8 +202,8 @@
                             v-model="surperTorder"
                             active-value="ASC"
                             inactive-value="DESC"
-                            active-text="时间倒序"
-                            inactive-text="时间正序">
+                            active-text="时间正序"
+                            inactive-text="时间倒序">
                           </el-switch>
 
                         </el-form>  
@@ -459,7 +459,7 @@
                 </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="数据库属性" name="4">数据库属性</el-tab-pane>
+            <el-tab-pane label="当前数据库属性" name="4"><p v-html='dbInfo'></p></el-tab-pane>
           </el-tabs>
           
         </el-container>
