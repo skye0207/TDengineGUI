@@ -25,7 +25,7 @@ module.exports = {
         if (err.response){
             return {'res':false,'msg':err.response.data.desc,'code':err.response.data.code}
         }else{
-            return {'res':false,'msg':'connect error','code':-1}
+            return {'res':false,'msg':'连接错误','code':-1}
         }
         
     }
