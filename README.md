@@ -1,5 +1,7 @@
 # TDengineGUI
 
+TDengineGUI是一个基于electron构建的，针对时序数据库tdengine的图形化管理工具。具有跨平台、易于使用、版本适应性强等特点。
+
 ##  当前版本功能
 
 - 通过tdenging restful接口连接到数据库，使用基本不受服务器版本升级影响
