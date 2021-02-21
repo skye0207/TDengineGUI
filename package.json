@@ -30,7 +30,12 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "packageMannager":"npm",
+        "icon":"build/icons/logo",
+        "asar":true,
+        "overwrite":true
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -43,14 +48,6 @@
           "platforms": [
             "darwin"
           ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
         }
       ]
     }
