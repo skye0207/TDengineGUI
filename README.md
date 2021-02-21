@@ -69,7 +69,7 @@ TDengineGUI是一个基于electron构建的，针对时序数据库TDengine的�
 
 数据库属性显示当前数据库的一些基础属性，后期版本将加入属性修改功能。
 
-![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/13.png)
+![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/14.png)
 
 现有bug:
 - [ ] 数据表控件高度需要根据每页条目数量自动调整，现在每页20条时需要上下滚动
