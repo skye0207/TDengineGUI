@@ -223,7 +223,7 @@ new Vue({
             //连接失败，1.提示 2.删除当前连接 3.重新连接
             //1
             this.$message({
-              message: '连接失败',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -292,7 +292,7 @@ new Vue({
             }else{
               //添加失败
               this.$message({
-                message: '添加失败',
+                message: data.msg,
                 type: 'error',
                 duration:1000
               });
@@ -328,7 +328,7 @@ new Vue({
               });
             } else {
               this.$message({
-                message: '删除失败',
+                message: data.msg,
                 type: 'error',
                 duration:1000
               });
@@ -411,7 +411,7 @@ new Vue({
             this.surperTables = data.data
           } else {
             this.$message({
-              message: '没有结果',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -450,7 +450,7 @@ new Vue({
             this.tables = data.data
           }else{
             this.$message({
-              message: '没有结果',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -514,7 +514,7 @@ new Vue({
             this.surperTables = data.data
           } else {
             this.$message({
-              message: '刷新失败',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -546,7 +546,7 @@ new Vue({
             this.tables = data.data
           }else{
             this.$message({
-              message: '刷新失败',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -710,7 +710,7 @@ new Vue({
             }
           }else{
             this.$message({
-              message: '获取失败',
+              message: data.msg,
               type: 'error',
               duration:1000
             });
@@ -829,7 +829,7 @@ new Vue({
               });
             } else {
               this.$message({
-                message: '删除失败',
+                message: data.msg,
                 type: 'error',
                 duration:500
               });
@@ -873,7 +873,7 @@ new Vue({
               });
             } else {
               this.$message({
-                message: '删除失败',
+                message: data.msg,
                 type: 'error',
                 duration:500
               });
