@@ -149,7 +149,6 @@ new Vue({
             if(data.res){
 
               TaosRestful.getVersion(payload).then(_data => {
-                console.log(_data)
                 //连接成功，保存到本地
                 storage.AddALink({
                   name: this.linkForm.name, 
