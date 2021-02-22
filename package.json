@@ -20,6 +20,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
     "electron": "^11.1.1"
   },
   "dependencies": {
@@ -31,10 +32,10 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "packageMannager":"npm",
-        "icon":"build/icons/logo",
-        "asar":true,
-        "overwrite":true
+        "packageMannager": "npm",
+        "icon": "build/icons/logo",
+        "asar": true,
+        "overwrite": true
       },
       "makers": [
         {
@@ -48,6 +49,13 @@
           "platforms": [
             "darwin"
           ]
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "background": "./_img/dmg-background.png",
+            "format": "ULFO"
+          }
         }
       ]
     }
