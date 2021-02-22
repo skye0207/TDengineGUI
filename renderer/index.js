@@ -145,21 +145,18 @@ new Vue({
           password:this.linkForm.password
         }
         TaosRestful.showDatabases(payload).then(data =>{
+          console.log(data)
             //处理返回的数据库数据
             if(data.res){
               //连接成功，保存到本地
-              TaosRestful.getVersion(payload).then(data => { 
-                storage.AddALink({
-                  name: this.linkForm.name, 
-                  host: this.linkForm.host, 
-                  port: this.linkForm.port, 
-                  user: this.linkForm.user, 
-                  password: this.linkForm.password,
-                  version: data
-                })
-                //更新连接列表
-                this.links = storage.getLinks()
+              storage.AddALink({
+                name: this.linkForm.name, 
+                host: this.linkForm.host, 
+                port: this.linkForm.port, 
+                user: this.linkForm.user, 
+                password: this.linkForm.password
               })
+
               //关闭新建连接的弹窗
               this.addLinkDialog = false
               //清空表单
@@ -170,6 +167,9 @@ new Vue({
                 user:"",
                 password:"",
               }
+
+              //更新连接列表
+              this.links = storage.getLinks()
              
             } else {
               //连接失败
