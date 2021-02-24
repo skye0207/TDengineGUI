@@ -6,7 +6,44 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.skype.tdenginegui",
+    "productName": "TDengineGUI",
+    "win": {
+      "icon": "build/icons/logo1.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/logo.icns"
+    },
+    "linux": {
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "keywords": [
     "Electron",
@@ -15,12 +52,7 @@
   ],
   "author": "skye0207",
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
+    "electron-builder": "^22.9.1",
     "electron": "^11.1.1"
   },
   "dependencies": {
@@ -29,35 +61,9 @@
     "element-ui": "^2.15.0",
     "vue": "^2.6.12"
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "packageMannager": "npm",
-        "icon": "build/icons/logo",
-        "asar": true,
-        "overwrite": true
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "electron_quick_start"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-dmg",
-          "config": {
-            "background": "./_img/dmg-background.png",
-            "format": "ULFO"
-          }
-        }
-      ]
-    }
-  }
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }
