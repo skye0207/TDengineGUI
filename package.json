@@ -37,7 +37,7 @@
       "icon": "build/icons/logo.icns"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons/logo.icns"
     },
     "nsis": {
       "oneClick": false,
