@@ -4,9 +4,7 @@
   "description": "A simple TDengine DeskTop Manager",
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
+    "start": "electron .",
     "build": "electron-builder"
   },
   "build": {
