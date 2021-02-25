@@ -13,7 +13,7 @@ TDengineGUI是一个基于electron构建的，针对时序数据库TDengine的�
 
 ### 下载最新版可执行文件：
 
-![release v1.0.0](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0)
+[release v1.0.0](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0)
 
 ### 通过源代码运行开发版本：
 
@@ -36,7 +36,7 @@ TDengineGUI是一个基于electron构建的，针对时序数据库TDengine的�
 
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/3.png)
 
-可以通过点击添加数据库图标，进行添加数据库操作。可以在添加时选择数据库属性(具体属性含义请参考![tdengine官方文档](https://www.taosdata.com/cn/documentation/taos-sql#management))
+可以通过点击添加数据库图标，进行添加数据库操作。可以在添加时选择数据库属性(具体属性含义请参考[tdengine官方文档](https://www.taosdata.com/cn/documentation/taos-sql#management))
 
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/5.png)
 
