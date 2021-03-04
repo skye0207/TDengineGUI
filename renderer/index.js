@@ -934,7 +934,25 @@ new Vue({
       closeTdialog(){
         this.TdialogText = ""
         this.Tdialog = false
-      }
+      },
+      STChooseAll(){
+        this.surperTableFilter.fields = this.surperTableLabelItems
+      },
+      STChooseReverse(){
+        let newFields = this.surperTableLabelItems.filter((item) => {
+            return this.surperTableFilter ? this.surperTableFilter.fields.indexOf(item) == -1 : false;
+        })
+        this.surperTableFilter.fields = newFields
+      },
+      TChooseAll(){
+        this.tableFilter.fields = this.tableLabelItems
+      },
+      TChooseReverse(){
+        let newFields = this.tableLabelItems.filter((item) => {
+            return this.tableLabelItems.fields? this.tableLabelItems.fields.indexOf(item) == -1: false;
+        })
+        this.tableFilter.fields = newFields
+      }  
    
     }
   })

@@ -181,6 +181,12 @@
                           <el-form-item label="数据项" >
                             <el-checkbox-group 
                               v-model="surperTableFilter.fields">
+                              <el-row class="btnGroup">
+                                <el-button-group>
+                                  <el-button size="mini" @click="STChooseAll">全选</el-button>
+                                  <el-button size="mini" @click="STChooseReverse">反选</el-button>
+                                </el-button-group>
+                              </el-row>
                               <el-row class="checkboxGroup">
                                 <el-col v-for="label in this.surperTableLabelItems" :key="label" :span="8">
                                   <el-checkbox class="checkbox" :label="label">{{label}}</el-checkbox>
@@ -347,6 +353,12 @@
                           <el-form-item label="数据项" >
                             <el-checkbox-group 
                               v-model="tableFilter.fields">
+                              <el-row class="btnGroup">
+                                <el-button-group>
+                                  <el-button size="mini" @click="TChooseAll">全选</el-button>
+                                  <el-button size="mini" @click="TChooseReverse">反选</el-button>
+                                </el-button-group>
+                              </el-row>
                               <el-row class="checkboxGroup">
                                 <el-col v-for="label in this.tableLabelItems" :key="label" :span="8">
                                   <el-checkbox class="checkbox" :label="label">{{label}}</el-checkbox>

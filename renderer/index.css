@@ -155,6 +155,10 @@ html, body, div {
     margin: 10px 0 0 10px;
 }
 
+.btnGroup{
+    margin: 6px 0 0 10px;
+}
+
 .checkboxGroup2{
     margin: 12px 0 0 10px;
 }
