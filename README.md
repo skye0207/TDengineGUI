@@ -1,28 +1,41 @@
 # TDengineGUI
 
-TDengineGUI是一个基于electron构建的，针对时序数据库TDengine的图形化管理工具。具有跨平台、易于使用、版本适应性强等特点。
+> TDengineGUI is a useful and simple desktop manager for [TDengine](https://github.com/taosdata/TDengine), compatible with Linux, windows, mac. It helps developer to observe and manipulate data easier when they use TDengine as their Alot big data platform.
 
-##  当前版本功能
+## Release
 
-- 通过TDengine restful接口连接到数据库，使用基本不受服务器版本升级影响
-- 数据库添加删除操作，显示数据库属性
-- 显示数据库中超级表和表信息，删除超级表与表功能
-- 显示超级表和表数据功能，提供分页、时间段检索、字段过滤、排序等功能
+### Windows：
 
-## 如何获取
+Download latest [exe](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0) package from [release](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0).
 
-### 下载最新版可执行文件：
+### Mac：
+Download latest [dmg](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0) package from [release](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0) [or [gitee](https://gitee.com/skyebaobao/TDengineGUI/releases/v1.0.0) in China]
 
-[release v1.0.0](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0)
+### Linux：
+Download latest [AppImage](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0) package from [release](https://github.com/skye0207/TDengineGUI/releases/tag/v1.0.0) [or [gitee](https://gitee.com/skyebaobao/TDengineGUI/releases/v1.0.0) in China]
 
-### 通过源代码运行开发版本：
 
-- 克隆项目: git clone https://github.com/skye0207/TDengineGUI.git
-- 安装依赖: npm install
-- 启动开发版本: npm run start
-- 生成桌面应用（可选）: npm run build （生成在dist文件夹下）
+## Dev Build Setup：
+```bash
+# clone code 
+git clone https://github.com/skye0207/TDengineGUI.git
 
-## 使用说明
+cd TDengineGUI
+
+# install dependencies
+npm install
+
+# serve
+npm run start
+```
+
+## Build Package
+```bash
+# Packaged application will generate in the dist folder
+npm run build 
+```
+
+## Instructions
 
 打开软件后，界面左侧会显示需要管理的数据库服务器列表和服务器中数据库列表，同时显示数据库服务器的版本号。
 
