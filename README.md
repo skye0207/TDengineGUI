@@ -54,7 +54,7 @@ npm run build
 
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/3.png)
 
-- Create databases. Specific attributes refering[tdengine document](https://www.taosdata.com/cn/documentation/taos-sql#management)
+- Create databases. Specific attributes refering [tdengine document](https://www.taosdata.com/cn/documentation/taos-sql#management)
 
 ![Image text](https://github.com/skye0207/TDengineGUI/blob/main/_img/5.png)
 
