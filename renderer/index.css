@@ -4,7 +4,7 @@ html, body, div {
     padding: 0;
 }
 
-.app{
+.app {
     height: 100%;
 }
 
@@ -13,11 +13,11 @@ html, body, div {
     width: 600px;
 }
 
-.linkBtn{
+.linkBtn {
     width: 90%;
 }
 
-.el-menu{
+.el-menu {
     border: none;
     margin-top: 20px;
     width: 90%;
@@ -26,23 +26,26 @@ html, body, div {
 .el-dialog {
     z-index: 1000;
 }
-.main{
-    height: 100%;
-}
-.mainContent{
+
+.main {
     height: 100%;
 }
 
-.tablePage{
-    height: 90%;
+.mainContent {
+    height: 100%;
 }
 
-.mainTab{
+.tablePage {
+    height: 95%;
+}
+
+.mainTab {
     width: 100%;
     border: none;
     box-shadow: none;
 }
-.tableWrapper{
+
+.tableWrapper {
     height: 100%;
 }
 
@@ -63,18 +66,18 @@ html, body, div {
     height: 35px !important;
 }
 
-.linkformstyle{
+.linkformstyle {
     margin: 0 10px;
 }
 
-.icon{
+.icon {
     height: 12px;
     width: 12px;
     position: relative;
     top: 1px;
 }
 
-.icon1{
+.icon1 {
     height: 16px;
     width: 16px;
     position: relative;
@@ -83,14 +86,15 @@ html, body, div {
     z-index: 111;
 }
 
-.icon11{
+.icon11 {
     height: 16px;
     width: 16px;
     position: relative;
     bottom: 1px;
     right: 8px;
 }
-.icon111{
+
+.icon111 {
     height: 16px;
     width: 16px;
     position: absolute;
@@ -98,72 +102,73 @@ html, body, div {
     right: 8px;
 }
 
-.switchBtn{
+.switchBtn {
     position: relative;
     bottom: 1px;
 }
 
-.footTextWrapper{
+.footTextWrapper {
     margin-left: 10px;
-    
+
 }
 
-.footText{
+.footText {
     margin-left: 10px;
     font-size: 13px;
     color: #444;
 }
 
-.iconWrapper{
+.iconWrapper {
     display: inline;
     margin-left: 50px;
 }
 
-.iconWrapper2{
+.iconWrapper2 {
     display: inline;
-    position:absolute;
+    position: absolute;
     right: 14px;
     height: 100%;
 }
-.iconWrapper3{
+
+.iconWrapper3 {
     display: inline;
-    position:absolute;
+    position: absolute;
     right: 54px;
 }
 
-.surperTables{
+.surperTables {
     margin-left: 10px;
     cursor: pointer;
 }
 
-.paginationWrapper{
+.paginationWrapper {
     margin-top: 20px;
     display: flex;
     justify-content: center;
 }
 
-.menu{
+.menu {
     overflow-y: auto;
     height: 650px;
 }
 
-.greyText{
+.greyText {
     color: #606266;
 }
 
-.checkboxGroup{
+.checkboxGroup {
     margin: 10px 0 0 10px;
 }
 
-.btnGroup{
+.btnGroup {
     margin: 6px 0 0 10px;
 }
 
-.checkboxGroup2{
+.checkboxGroup2 {
     margin: 12px 0 0 10px;
 }
 
-.surperTSearchRow{
+.surperTSearchRow {
     margin: 20px 0 20px 0;
 }
 
@@ -175,22 +180,22 @@ html, body, div {
     background-color: #fff;
 }
 
-.freshDataBtn{
+.freshDataBtn {
     padding-left: 20px;
 }
 
-.dataPackerLabel{
+.dataPackerLabel {
     line-height: 34px;
     font-size: 14px;
     color: #606266;
 }
 
-.consoleWrapper{
+.consoleWrapper {
     height: 90%;
-    width:100%;
+    width: 100%;
 }
 
-.resultPlace{
+.resultPlace {
     height: 92%;
     width: 100%;
     border: 1px solid #DCDFE6;
@@ -198,27 +203,26 @@ html, body, div {
     margin-top: 15px;
 }
 
-.resultPlaceTitle{
-    color: #DCDFE6;
+.resultPlaceTitle {
     margin-top: 7px;
     margin-left: 10px;
 }
 
-.iconWrapper_{
+.iconWrapper_ {
     display: inline;
 }
 
-.switchStyle{
+.switchStyle {
     margin-left: 12px;
     position: relative;
     bottom: 3px;
 }
 
-.el-switch__label{
+.el-switch__label {
     height: auto !important;
 }
 
-.addDBswitchStyle{
+.addDBswitchStyle {
     position: relative;
     top: 6px;
 }
