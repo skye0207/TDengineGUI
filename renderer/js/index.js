@@ -146,6 +146,14 @@ new Vue({
                 }
             })
         },
+        /** 复制代码成功 */
+        clipboardSuccess(){
+            this.$message({
+                message: '复制成功',
+                type: 'success',
+                duration: 500
+            });
+        },
         confirmAddLink(event) {
             //新建连接，先连接，如果成功，将payload+name记入本地
             //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")

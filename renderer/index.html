@@ -3,11 +3,12 @@
     <meta charset="UTF-8">
     <title>TDengineGUI</title>
     <link rel="stylesheet" href="../node_modules/element-ui/lib/theme-chalk/index.css">
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 <script src="../node_modules/vue/dist/vue.js"></script>
 <script src="../node_modules/element-ui/lib/index.js"></script>
+<script src="js/vue-clipboard2/vue-clipboard.min.js"></script>
 <div id="app">
     <!-- 连接列表 -->
     <el-drawer
@@ -486,17 +487,20 @@
                     <div class="consoleWrapper">
                         <el-input placeholder="请输入内容" v-model="consoleInput">
                             <template slot="prepend">SQL:</template>
-                            <el-button slot="append" icon="el-icon-s-promotion" @click="sendSQL"></el-button>
+                            <el-button slot="append" icon="el-icon-s-promotion" @click="sendSQL">执行</el-button>
                         </el-input>
                         <div class="resultPlace">
                             <!-- <el-input :rows='1000' type="textarea" placeholder="运行结果" v-model="consoleResult" :disabled="true"></el-input> -->
-                            <div style="height:100%;overflow-y:auto" class="resultPlaceTitle">
+                            <div style="height:99%;overflow-y:auto" class="resultPlaceTitle">
+                                <el-link :underline="false" icon="el-icon-document-copy"
+                                         v-clipboard:copy="JSON.stringify(consoleResult, null, 4)"
+                                         v-clipboard:success="clipboardSuccess" style="float:right;margin-right: 10px">复制</el-link>
                                 <pre>{{ JSON.stringify(consoleResult, null, 4) }}</pre>
                             </div>
                         </div>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="当前数据库属性" name="4"><p v-html='dbInfo'></p></el-tab-pane>
+                <el-tab-pane label="当前库属性" name="4"><p v-html='dbInfo'></p></el-tab-pane>
             </el-tabs>
 
         </el-container>
@@ -524,7 +528,7 @@
 
 </div>
 <script>
-    require('./index.js')
+    require('./js/index.js')
 </script>
 </body>
 </html>
