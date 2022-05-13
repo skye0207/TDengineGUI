@@ -205,9 +205,9 @@
                                         <el-form-item label="每页数目">
                                             <el-radio-group v-model="eachPageSurperTable">
                                                 <el-row class="checkboxGroup2">
-                                                    <el-radio :label="10">10</el-radio>
-                                                    <el-radio :label="15">15</el-radio>
                                                     <el-radio :label="20">20</el-radio>
+                                                    <el-radio :label="30">30</el-radio>
+                                                    <el-radio :label="50">50</el-radio>
                                                 </el-row>
                                             </el-radio-group>
                                         </el-form-item>
@@ -222,9 +222,9 @@
 
                                     </el-form>
                                     <span slot="footer" class="dialog-footer">
-                          <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
-                          <el-button @click="postSurperTableFilter" size="small">确认</el-button>
-                        </span>
+                                      <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
+                                      <el-button @click="postSurperTableFilter" size="small">确认</el-button>
+                                    </span>
                                 </el-dialog>
                                 <!-- 超级表数据 -->
                                 <el-row class="surperTSearchRow">
@@ -272,7 +272,7 @@
                                         size="mini"
                                         :data="surperTableData"
                                         border
-                                        max-height="577"
+                                        :max-height="contentTableHeight"
                                         style="width: 100%">
                                     <el-table-column
                                             fixed
@@ -390,9 +390,9 @@
 
                                             <el-radio-group v-model="eachPageTable">
                                                 <el-row class="checkboxGroup2">
-                                                    <el-radio :label="10">10</el-radio>
-                                                    <el-radio :label="15">15</el-radio>
                                                     <el-radio :label="20">20</el-radio>
+                                                    <el-radio :label="30">30</el-radio>
+                                                    <el-radio :label="50">50</el-radio>
                                                 </el-row>
                                             </el-radio-group>
                                         </el-form-item>
@@ -452,7 +452,7 @@
                                         size="mini"
                                         :data="tableData"
                                         border
-                                        max-height="577"
+                                        :max-height="contentTableHeight"
                                         style="width: 100%;">
                                     <el-table-column
                                             fixed

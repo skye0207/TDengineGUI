@@ -5,6 +5,7 @@ const {TouchBarScrubber} = require('electron')
 new Vue({
     el: '#app',
     mounted: function () {
+        let _this = this;
         let links = storage.getLinks()
         for (let i = 0, len = links.length; i < len; i++) {
             let payload = {
@@ -18,7 +19,11 @@ new Vue({
                 this.$data.links = links
             })
         }
-
+        this.$nextTick(() => {
+            window.onresize = function listen() {
+                _this.contentTableHeight = window.innerHeight * 0.74;
+            }
+        })
     },
     data: function () {
         return {
@@ -58,6 +63,8 @@ new Vue({
             tableFilterDialog: false,
             surperTableFilterDialog: false,
 
+            contentTableHeight: window.innerHeight * 0.74,
+
             surperTables: [], //超级表list
             surperTableData: [],
             surperTableName: "",
@@ -76,9 +83,9 @@ new Vue({
             loadingTableList: false,
             loadingTable: false,
 
-            eachPageSurperTable: 15,
+            eachPageSurperTable: 20,
             currentPageSurperTable: 1,
-            eachPageTable: 15,
+            eachPageTable: 20,
             currentPageTable: 1,
 
             addDBDialogLinkKey: 0,
