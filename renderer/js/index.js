@@ -82,7 +82,7 @@ new Vue({
             addDBcomp: "",
             addDBreplica: "",
             addDBkeep: "",
-            addDBupdate: false,
+            addDBupdate: "",
             addDBquorum: "",
             addDBblocks: "",
 
@@ -247,12 +247,12 @@ new Vue({
             this.addDBDialog = true
 
             this.addDBname = ""
-            this.addDBcomp = ""
-            this.addDBreplica = ""
-            this.addDBkeep = ""
-            this.addDBupdate = false
-            this.addDBquorum = ""
-            this.addDBblocks = ""
+            this.addDBcomp = 2
+            this.addDBreplica = 1
+            this.addDBkeep = 3650
+            this.addDBupdate = 0
+            this.addDBquorum = 1
+            this.addDBblocks = 6
         },
         postaddDB() {
             let key = this.addDBDialogLinkKey
@@ -274,7 +274,9 @@ new Vue({
                         return
                     }
                 }
-                TaosRestful.createDatabase(this.addDBname, payload, safe = true, keep = this.addDBkeep, update = this.addDBupdate, comp = this.addDBcomp, replica = this.addDBreplica, quorum = this.addDBquorum, blocks = this.addDBblocks).then(data => {
+                TaosRestful.createDatabase(this.addDBname, payload, safe = true, keep = this.addDBkeep,
+                    update = this.addDBupdate, comp = this.addDBcomp, replica = this.addDBreplica,
+                    quorum = this.addDBquorum, blocks = this.addDBblocks).then(data => {
                     if (data.res) {
                         //新增成功
                         this.$message({
@@ -334,13 +336,13 @@ new Vue({
                 })
         },
         makeDbInfo(dbs, dbName) {
-            console.log(dbs)
+            // console.log(dbs)
             let info = '无法获取数据库信息'
             dbs.forEach(item => {
                 if (item['name'] === dbName) {
                     info = `数据库名:&nbsp;&nbsp;${dbName}<br/>`
                     info += `创建时间:&nbsp;&nbsp;${item['created_time']}<br/>`
-                    info += `可更新:&nbsp;&nbsp;${item['update'] == 0 ? '否' : '是'}<br/>`
+                    info += `update:&nbsp;&nbsp;${item['update'] > 0 ? (item['update'] === 1 ? '允许整行更新' : '允许部分列更新' ) : '不允许更新'}<br/>`
                     info += `cache(MB):&nbsp;&nbsp;${item['cache(MB)']}<br/>`
                     info += `cachelast:&nbsp;&nbsp;${item['cachelast']}<br/>`
                     info += `comp:&nbsp;&nbsp;${item['comp']}<br/>`
@@ -645,8 +647,9 @@ new Vue({
             // }
 
             //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
-            TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields = this.surperTableFilter.fields, where = this.surperWhere
-                , limit = this.eachPageSurperTable, offset = offsetVal, desc = this.surperTorder, startTime = startTime, endTime = endTime)
+            TaosRestful.selectData(this.surperTableName, this.theDB, payload, fields = this.surperTableFilter.fields,
+                where = this.surperWhere, limit = this.eachPageSurperTable, offset = offsetVal,
+                desc = this.surperTorder, startTime = startTime, endTime = endTime)
                 .then(data => {
                     if (data.res) {
                         //成功
@@ -709,8 +712,9 @@ new Vue({
             // }
 
             //tableName,dbName,payload,fields=null,where=null,limit =null,offset = null,desc =null,startTime=null,endTime=null
-            TaosRestful.selectData(this.tableName, this.theDB, payload, fields = this.tableFilter.fields, where = this.tableWhere
-                , limit = this.eachPageTable, offset = offsetVal, desc = this.Torder, startTime = startTime, endTime = endTime)
+            TaosRestful.selectData(this.tableName, this.theDB, payload, fields = this.tableFilter.fields,
+                where = this.tableWhere, limit = this.eachPageTable, offset = offsetVal,
+                desc = this.Torder, startTime = startTime, endTime = endTime)
                 .then(data => {
                     if (data.res) {
                         //成功
@@ -844,15 +848,6 @@ new Vue({
             // console.log(this.theDB)
             TaosRestful.rawSqlWithDB(this.consoleInput, this.theDB, payload).then(data => {
                 if (data.res) {
-                    // let info = ''
-                    // info += `数据数量:&nbsp;&nbsp;${data.count}<br/>`
-                    // info += `数据列:&nbsp;&nbsp;${data.head}<br/>`
-                    // info += `数据:&nbsp;&nbsp;${data.data}<br/>`
-                    this.$message({
-                        message: '执行成功',
-                        type: 'success',
-                        duration: 500
-                    });
                     this.consoleResult = data
                 } else {
                     this.$message({
@@ -861,7 +856,6 @@ new Vue({
                         duration: 1000
                     });
                 }
-
             })
         },
         closeSuperTdialog() {
