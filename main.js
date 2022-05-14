@@ -1,5 +1,10 @@
 const { app, BrowserWindow } = require('electron')
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
+const Store = require('electron-store');
+Store.initRenderer();
+
 function createWindow () {
   const win = new BrowserWindow({
     autoHideMenuBar: true,

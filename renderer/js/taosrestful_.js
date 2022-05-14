@@ -3,7 +3,10 @@ const axios = require('axios')
 module.exports = {
    async sendRequest(sqlStr, payload){
     // console.log(sqlStr)
-    try {   
+    try {
+        if (!payload.timeout) {
+            payload.timeout = 2000;
+        }
         let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
             auth: {
             username: payload.user,
@@ -11,7 +14,7 @@ module.exports = {
             },
             timeout: payload.timeout
         })
-        if (res.data.status == 'succ'){
+        if (res.data.status === 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
             // console.log(res.data.head)
@@ -27,7 +30,7 @@ module.exports = {
         }else{
             return {'res':false,'msg':'连接错误','code':-1}
         }
-        
+
     }
 
    },
@@ -46,7 +49,7 @@ module.exports = {
         )
    },
    getVersion(payload){
-        //获取服务器版本    
+        //获取服务器版本
         return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a =>
             {
                 if (a.res === false){
@@ -226,7 +229,7 @@ module.exports = {
                 return new Promise((resolve, reject)=>{resolve(0)})
             }
         })
-    },  
+    },
    rawSql(sqlStr,payload){
         return this.sendRequest(sqlStr,payload)
    },

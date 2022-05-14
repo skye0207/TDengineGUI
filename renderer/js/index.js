@@ -1,24 +1,12 @@
 const TaosRestful = require('./taosrestful_.js')
-const storage = require('./localDataStore.js')
+require('./electronStore.js')
 const {TouchBarScrubber} = require('electron')
 
 new Vue({
     el: '#app',
     mounted: function () {
         let _this = this;
-        let links = storage.getLinks()
-        for (let i = 0, len = links.length; i < len; i++) {
-            let payload = {
-                ip: links[i].host,
-                port: links[i].port,
-                user: links[i].user,
-                password: links[i].password
-            }
-            TaosRestful.getVersion(payload).then(data => {
-                links[i].version = data
-                this.$data.links = links
-            })
-        }
+        this.$data.links = this.$electronStore.getLinks()
         this.$nextTick(() => {
             window.onresize = function listen() {
                 _this.contentTableHeight = window.innerHeight * 0.74;
@@ -133,6 +121,9 @@ new Vue({
         },
         cancelAddLink() {
             this.addLinkDialog = false
+            this.clearLinkForm();
+        },
+        clearLinkForm() {
             //清空表单
             this.linkForm = {
                 name: "",
@@ -154,7 +145,7 @@ new Vue({
             })
         },
         /** 复制代码成功 */
-        clipboardSuccess(){
+        clipboardSuccess() {
             this.$message({
                 message: '复制成功',
                 type: 'success',
@@ -176,7 +167,7 @@ new Vue({
 
                         TaosRestful.getVersion(payload).then(_data => {
                             //连接成功，保存到本地
-                            storage.AddALink({
+                            this.$electronStore.addALink({
                                 name: this.linkForm.name,
                                 host: this.linkForm.host,
                                 port: this.linkForm.port,
@@ -184,21 +175,13 @@ new Vue({
                                 password: this.linkForm.password,
                                 version: _data
                             })
+                            //更新连接列表
+                            this.links = this.$electronStore.getLinks()
                             //关闭新建连接的弹窗
                             this.addLinkDialog = false
                             //清空表单
-                            this.linkForm = {
-                                name: "",
-                                host: "",
-                                port: "",
-                                user: "",
-                                password: "",
-                            }
-
-                            //更新连接列表
-                            this.links = storage.getLinks()
+                            this.clearLinkForm();
                         })
-
                     } else {
                         //连接失败
                         this.$message({
@@ -207,31 +190,23 @@ new Vue({
                             duration: 1000
                         });
                     }
-
                 }
             )
-
         },
         deleteLink(key, linkName) {
             this.$confirm('确认删除连接' + linkName + "吗？")
                 .then(_ => {
-                    storage.deleteALink(key)
-                    this.links = storage.getLinks()
+                    this.$electronStore.deleteALink(key)
+                    this.links = this.$electronStore.getLinks()
                     this.$message({
                         message: '删除成功',
                         type: 'success',
                         duration: 500
                     });
                 })
-                .catch(_ => {
-                    this.$message({
-                        message: '操作已取消',
-                        type: 'warning',
-                        duration: 500
-                    });
-                });
         },
         freshDB(key) {
+            let _this = this;
             let theLink = this.links[key]
             let payload = {
                 ip: theLink.host,
@@ -249,33 +224,21 @@ new Vue({
                         duration: 1000
                     });
                     this.links[key].dbs = data.data
+
+                    TaosRestful.getVersion(payload).then(data => {
+                        theLink.version = data
+                        _this.$data.links[key] = theLink
+                    })
+
                     //TODO展开菜单
 
                 } else {
-                    //连接失败，1.提示 2.删除当前连接 3.重新连接
-                    //1
+                    //连接失败，直接提示
                     this.$message({
-                        message: data.msg,
+                        message: "连接失败，请稍后重试",
                         type: 'error',
                         duration: 1000
                     });
-                    //2
-                    storage.deleteALink(key)
-                    this.links = storage.getLinks()
-                    //3
-                    this.$message({
-                        message: '尝试重新连接',
-                        type: 'warning',
-                        duration: 1000
-                    });
-                    this.linkForm = {
-                        name: theLink.name,
-                        host: theLink.host,
-                        port: theLink.port,
-                        user: theLink.user,
-                        password: theLink.password,
-                    }
-                    this.addLinkDialog = true
                 }
             })
         },
@@ -369,19 +332,12 @@ new Vue({
                         this.freshDB(key)
                     })
                 })
-                .catch(_ => {
-                    this.$message({
-                        message: '操作已取消',
-                        type: 'warning',
-                        duration: 1000
-                    });
-                });
         },
         makeDbInfo(dbs, dbName) {
             console.log(dbs)
             let info = '无法获取数据库信息'
             dbs.forEach(item => {
-                if (item['name'] == dbName) {
+                if (item['name'] === dbName) {
                     info = `数据库名:&nbsp;&nbsp;${dbName}<br/>`
                     info += `创建时间:&nbsp;&nbsp;${item['created_time']}<br/>`
                     info += `可更新:&nbsp;&nbsp;${item['update'] == 0 ? '否' : '是'}<br/>`
@@ -537,12 +493,6 @@ new Vue({
             this.loadingSurperList = true
             TaosRestful.showSuperTables(this.theDB, payload).then(data => {
                 if (data.res) {
-                    //拉取超级表成功
-                    this.$message({
-                        message: '刷新成功',
-                        type: 'success',
-                        duration: 1000
-                    });
                     this.surperTables = data.data
                 } else {
                     this.$message({
@@ -569,12 +519,6 @@ new Vue({
             this.loadingTableList = true
             TaosRestful.showTables(this.theDB, payload).then(data => {
                 if (data.res) {
-                    //拉取表成功
-                    this.$message({
-                        message: '刷新成功',
-                        type: 'success',
-                        duration: 1000
-                    });
                     this.tables = data.data
                 } else {
                     this.$message({
@@ -609,11 +553,6 @@ new Vue({
             this.surperTableFilterCopy = JSON.parse(JSON.stringify(this.surperTableFilter))
         },
         concelSurperTableFilter() {
-            this.$message({
-                message: '取消操作',
-                type: 'warning',
-                duration: 1000
-            });
             this.surperTableFilterDialog = false
             this.surperTableFilter = this.surperTableFilterCopy
         },
@@ -626,11 +565,6 @@ new Vue({
             this.tableFilterCopy = JSON.parse(JSON.stringify(this.tableFilter))
         },
         concelTableFilter() {
-            this.$message({
-                message: '取消操作',
-                type: 'warning',
-                duration: 1000
-            });
             this.tableFilterDialog = false
             this.tableFilter = this.tableFilterCopy
         },
@@ -716,13 +650,7 @@ new Vue({
                 .then(data => {
                     if (data.res) {
                         //成功
-                        if (data.data.length != 0) {
-                            //有数据
-                            this.$message({
-                                message: '获取成功',
-                                type: 'success',
-                                duration: 1000
-                            });
+                        if (data.data.length !== 0) {
                             if (isFirst) {
                                 this.surperTableLabelItems = Object.keys(data.data[0])
                             }
@@ -786,13 +714,7 @@ new Vue({
                 .then(data => {
                     if (data.res) {
                         //成功
-                        if (data.data.length != 0) {
-                            //有数据
-                            this.$message({
-                                message: '获取成功',
-                                type: 'success',
-                                duration: 1000
-                            });
+                        if (data.data.length !== 0) {
                             if (isFirst) {
                                 this.tableLabelItems = Object.keys(data.data[0])
                             }
@@ -875,13 +797,6 @@ new Vue({
                     })
 
                 })
-                .catch(_ => {
-                    this.$message({
-                        message: '操作已取消',
-                        type: 'warning',
-                        duration: 500
-                    });
-                });
         },
         editT(val) {
             console.log(val)
@@ -917,15 +832,7 @@ new Vue({
                         this.loadingTableList = false
                         this.freshTables()
                     })
-
                 })
-                .catch(_ => {
-                    this.$message({
-                        message: '操作已取消',
-                        type: 'warning',
-                        duration: 500
-                    });
-                });
         },
         sendSQL() {
             let payload = {
