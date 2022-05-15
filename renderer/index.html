@@ -78,7 +78,7 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">comp
-                    <el-tooltip content="文件压缩度，0：关闭，1：一阶段压缩，2：两阶段压缩。缺省值：2" placement="top-start">
+                    <el-tooltip content="文件压缩度（可通过 alter database 修改）0：关闭，1：一阶段压缩，2：两阶段压缩。缺省值：2" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
@@ -90,7 +90,7 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">replica
-                    <el-tooltip content="副本个数，缺省值：1" placement="top-start">
+                    <el-tooltip content="副本个数（可通过 alter database 修改）缺省值：1" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
@@ -102,7 +102,7 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">keep
-                    <el-tooltip content="数据保留的天数，单位：天，缺省值：3650" placement="top-start">
+                    <el-tooltip content="数据保留的天数（可通过 alter database 修改）单位：天，缺省值：3650" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
@@ -111,7 +111,7 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">update
-                    <el-tooltip content="更新数据行，0：不允许更新，1：允许整行更新，2：允许部分列更新。（2.1.7.0 版本开始此参数支持设为 2，在此之前取值只能是 [0, 1]）。2.0.8.0 版本之前，不支持此参数。缺省值：0" placement="top-start">
+                    <el-tooltip content="更新数据行（不可通过 alter database 修改）0：不允许更新，1：允许整行更新，2：允许部分列更新。（2.1.7.0 版本开始此参数支持设为 2，在此之前取值只能是 [0, 1]）。2.0.8.0 版本之前，不支持此参数。缺省值：0" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
@@ -123,7 +123,7 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">quorum
-                    <el-tooltip content="写入确认数，即：多副本环境下指令执行的确认数要求。缺省值：1" placement="top-start">
+                    <el-tooltip content="写入确认数（可通过 alter database 修改）即：多副本环境下指令执行的确认数要求。缺省值：1" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
@@ -134,11 +134,11 @@
             </el-form-item>
             <el-form-item>
                 <span slot="label">blocks
-                    <el-tooltip content="内存块大小，即：每个 vnode（tsdb）中有多少 cache 大小的内存块。缺省值：6" placement="top-start">
+                    <el-tooltip content="内存块大小（可通过 alter database 修改）即：每个 vnode（tsdb）中有多少 cache 大小的内存块。缺省值：6" placement="top-start">
                         <i class="el-icon-question"></i>
                     </el-tooltip>
                 </span>
-                <el-input-number v-model="addDBblocks" :min="3" :max="1000" controls-position="right" style="width: 85%"></el-input-number>
+                <el-input-number v-model="addDBblocks" :min="3" :max="10000" controls-position="right" style="width: 85%"></el-input-number>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

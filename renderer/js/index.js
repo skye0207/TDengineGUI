@@ -276,7 +276,7 @@ new Vue({
                 }
                 TaosRestful.createDatabase(this.addDBname, payload, safe = true, keep = this.addDBkeep,
                     update = this.addDBupdate, comp = this.addDBcomp, replica = this.addDBreplica,
-                    quorum = this.addDBquorum, blocks = this.addDBblocks).then(data => {
+                    quorum = this.addDBquorum, blocks = this.addDBblocks, theLink.version).then(data => {
                     if (data.res) {
                         //新增成功
                         this.$message({

@@ -38,27 +38,20 @@ module.exports = {
     },
     testConnect(payload) {
         return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a => {
-                if (a.res === false && a.code === -1) {
-                    return false
-                } else {
-                    return true
-                }
+                return !(a.res === false && a.code === -1);
             }
         )
     },
     getVersion(payload) {
         //获取服务器版本
         return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a => {
-                if (a.res === false) {
-                    return 'unkown'
-                } else {
-                    return a.data[0]['server_version()']
-                }
+            return a.res === false ? 'unkown' : a.data[0]['server_version()'];
             }
         )
     },
     //添加数据库
-    createDatabase(dbName, payload, safe = true, keep = null, update = false, comp = null, replica = null, quorum = null, blocks = null) {
+    createDatabase(dbName, payload, safe = true, keep = null, update = 0, comp = null,
+                   replica = null, quorum = null, blocks = null, version) {
         let sqlStr = 'CREATE DATABASE '
         if (safe) {
             sqlStr += 'IF NOT EXISTS '
@@ -81,9 +74,20 @@ module.exports = {
             sqlStr += ` BLOCKS ${blocks}`
         }
         if (update) {
-            sqlStr += ` UPDATE ${update}`
+            if (this.compareVersion(version, '2.0.8.0')) {
+                if (update == 2) {
+                    if (this.compareVersion(version, '2.1.7.0')) {
+                        sqlStr += ` UPDATE ${update}`
+                    } else {
+                        console.log("update参数暂不支持：" + version + "版本")
+                    }
+                } else {
+                    sqlStr += ` UPDATE ${update}`
+                }
+            } else {
+                console.log("update参数暂不支持：" + version + "版本")
+            }
         }
-        // console.log(sqlStr)
         return this.sendRequest(sqlStr, payload)
     },
 // alterDatabase(dbName,keep=null,comp=null,replica=null,quorum=null,blocks=null){
@@ -242,6 +246,22 @@ module.exports = {
         return this.sendRequest(`USE ${dbName}`, payload).then(a => {
             return this.sendRequest(sqlStr, payload)
         })
+    },
+    compareVersion(serverVersion, targetVersion) {
+        if (serverVersion === targetVersion) {
+            return true;
+        }
+        let serverArray = serverVersion.split(".");
+        let targetArray = targetVersion.split(".");
+        let length = Math.min(serverArray.length, targetArray.length);
+        for (let i = 0; i < length; i++) {
+            if (serverArray[i] > targetArray[i]) {
+                return true;
+            } else if (serverArray[i] < targetArray[i]) {
+                return false;
+            }
+        }
+        return false;
     }
 }
 
