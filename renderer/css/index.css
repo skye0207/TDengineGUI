@@ -14,13 +14,13 @@ html, body, div {
 }
 
 .linkBtn {
-    width: 90%;
+    width: 95%;
 }
 
 .el-menu {
     border: none;
     margin-top: 20px;
-    width: 90%;
+    width: 95%;
 }
 
 .el-dialog {
@@ -133,7 +133,7 @@ html, body, div {
 .iconWrapper3 {
     display: inline;
     position: absolute;
-    right: 54px;
+    right: 40px;
 }
 
 .surperTables {

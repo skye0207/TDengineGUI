@@ -20,6 +20,7 @@ new Vue({
             loadingLinks: false,
             drawer: true,
             addLinkDialog: false,
+            addOrEditTitle: '新建连接',
             linkForm: {
                 name: "",
                 host: "",
@@ -121,6 +122,7 @@ new Vue({
         },
         cancelAddLink() {
             this.addLinkDialog = false
+            this.addOrEditTitle = '新建连接'
             this.clearLinkForm();
         },
         clearLinkForm() {
@@ -179,6 +181,7 @@ new Vue({
                             this.links = this.$electronStore.getLinks()
                             //关闭新建连接的弹窗
                             this.addLinkDialog = false
+                            this.addOrEditTitle = '新建连接'
                             //清空表单
                             this.clearLinkForm();
                         })
@@ -228,6 +231,16 @@ new Vue({
                     TaosRestful.getVersion(payload).then(data => {
                         theLink.version = data
                         _this.$data.links[key] = theLink
+                        if (TaosRestful.compareVersion(data, theLink.version)) {
+                            this.$electronStore.addALink({
+                                name: theLink.name,
+                                host: theLink.host,
+                                port: theLink.port,
+                                user: theLink.user,
+                                password: theLink.password,
+                                version: data
+                            })
+                        }
                     })
 
                     //TODO展开菜单
@@ -253,6 +266,18 @@ new Vue({
             this.addDBupdate = 0
             this.addDBquorum = 1
             this.addDBblocks = 6
+        },
+        editDB(key) {
+            let theLink = this.links[key]
+            this.linkForm = {
+                name: theLink.name,
+                host: theLink.host,
+                port: theLink.port,
+                user: theLink.user,
+                password: theLink.password,
+            }
+            this.addOrEditTitle = '编辑连接'
+            this.addLinkDialog = true
         },
         postaddDB() {
             let key = this.addDBDialogLinkKey
@@ -348,7 +373,7 @@ new Vue({
                     info += `comp:&nbsp;&nbsp;${item['comp']}<br/>`
                     info += `days:&nbsp;&nbsp;${item['days']}<br/>`
                     info += `fsync:&nbsp;&nbsp;${item['fsync']}<br/>`
-                    info += `keep0,keep1,keep(D):&nbsp;&nbsp;${item['keep0,keep1,keep(D)']}<br/>`
+                    info += `keep1,keep2,keep(D):&nbsp;&nbsp;${item['keep1,keep2,keep(D)']}<br/>`
                     info += `maxrows:&nbsp;&nbsp;${item['maxrows']}<br/>`
                     info += `minrows:&nbsp;&nbsp;${item['minrows']}<br/>`
                     info += `ntables:&nbsp;&nbsp;${item['ntables']}<br/>`
@@ -805,8 +830,8 @@ new Vue({
         editT(val) {
             console.log(val)
         },
-        deleteT(val) {
-            this.$confirm('确认删除表' + val + "吗？")
+        deleteT(table_name) {
+            this.$confirm('确认删除表' + table_name + "吗？")
                 .then(_ => {
                     let payload = {
                         ip: this.theLink.host,
@@ -817,7 +842,7 @@ new Vue({
                     this.loadingTableList = true
 
                     //TODO没测试过
-                    TaosRestful.dropTable(val, this.theDB, payload).then(data => {
+                    TaosRestful.dropTable(table_name, this.theDB, payload).then(data => {
 
                         if (data.res) {
                             //成功
@@ -845,8 +870,7 @@ new Vue({
                 user: this.theLink.user,
                 password: this.theLink.password
             }
-            // console.log(this.theDB)
-            TaosRestful.rawSqlWithDB(this.consoleInput, this.theDB, payload).then(data => {
+            TaosRestful.rawSql(this.consoleInput, payload).then(data => {
                 if (data.res) {
                     this.consoleResult = data
                 } else {

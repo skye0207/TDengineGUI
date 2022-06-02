@@ -241,14 +241,8 @@ module.exports = {
     rawSql(sqlStr, payload) {
         return this.sendRequest(sqlStr, payload)
     },
-    rawSqlWithDB(sqlStr, dbName, payload) {
-        // let dbN = dbName ? dbName : this.database
-        return this.sendRequest(`USE ${dbName}`, payload).then(a => {
-            return this.sendRequest(sqlStr, payload)
-        })
-    },
     compareVersion(serverVersion, targetVersion) {
-        if (serverVersion === targetVersion) {
+        if (serverVersion == targetVersion) {
             return true;
         }
         let serverArray = serverVersion.split(".");

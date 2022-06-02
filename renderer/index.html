@@ -14,7 +14,7 @@
     <el-drawer
             :before-close="beforeClosedrawer"
             title="数据库"
-            size="380"
+            size="400"
             :visible.sync="drawer"
             direction="ltr">
         <div v-loading="loadingLinks">
@@ -30,6 +30,7 @@
                         <div class="iconWrapper3">
                             <img @click.stop="addDB(index)" class="icon1" src="./img/add.png">
                             <img @click.stop="freshDB(index)" class="icon1" src="./img/fresh.png">
+                            <img @click.stop="editDB(index)" class="icon1" src="./img/edit.png">
                             <img @click.stop="deleteLink(index, link.name)" class="icon1" src="./img/delete.png">
                         </div>
                     </template>
@@ -45,7 +46,7 @@
         </div>
     </el-drawer>
     <!-- 新建连接的弹窗 -->
-    <el-dialog :close-on-click-modal="false" :before-close="cancelAddLink" :visible.sync="addLinkDialog" title="新建连接">
+    <el-dialog :close-on-click-modal="false" :before-close="cancelAddLink" :visible.sync="addLinkDialog" :title="addOrEditTitle">
         <el-form :model="linkForm" :ref="linkForm" class="linkformstyle" label-width="80px">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="linkForm.name"></el-input>
