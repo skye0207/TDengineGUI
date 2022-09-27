@@ -16,7 +16,7 @@ module.exports = {
                 timeout: payload.timeout
             })
 
-            res = formatResult(res)
+            res = formatResult(res, sqlStr)
 
             if (res.data.status === 'succ') {
                 // console.log(res.data.data)
