@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { formatResult } = require('./versionAdapter')
 
 module.exports = {
     async sendRequest(sqlStr, payload) {
@@ -14,6 +15,9 @@ module.exports = {
                 },
                 timeout: payload.timeout
             })
+
+            res = formatResult(res)
+
             if (res.data.status === 'succ') {
                 // console.log(res.data.data)
                 // console.log(res.data.rows)
