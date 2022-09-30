@@ -32,7 +32,14 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/logo.icns"
+      "icon": "build/icons/logo.icns",
+      "target": {
+        "target": "default",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      }
     },
     "linux": {
       "icon": "build/icons/logo.icns"
