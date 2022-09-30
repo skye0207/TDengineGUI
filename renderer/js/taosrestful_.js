@@ -6,7 +6,7 @@ module.exports = {
         // console.log(sqlStr)
         try {
             if (!payload.timeout) {
-                payload.timeout = 2000;
+                payload.timeout = 10000;
             }
             let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
                 auth: {
