@@ -1,5 +1,5 @@
 const axios = require('axios')
-
+const ConvertFormat=require('./util')
 module.exports = {
    async sendRequest(sqlStr, payload){
     // console.log(sqlStr)
@@ -11,16 +11,18 @@ module.exports = {
             },
             timeout: payload.timeout
         })
-        if (res.data.status == 'succ'){
-            // console.log(res.data.data)
-            // console.log(res.data.rows)
-            // console.log(res.data.head)
-            let head  = res.data.head
-            let resData = res.data.data.map(item => Object.fromEntries(head.map((a,b)=>[a,item[b]])))
-            return  {'res':true,'count':res.data.rows,'data':resData}
-        }else{
-            return {'res':false,'msg':res.data.desc,'code':res.data.code}
-        }
+       return ConvertFormat.convertToStandardFormat(res)
+        // if (res.data.status == 'succ'){
+        //     // console.log(res.data.data)
+        //     // console.log(res.data.rows)
+        //     // console.log(res.data.head)
+        //     let head  = res.data.head
+        //     let resData = res.data.data.map(item => Object.fromEntries(head.map((a,b)=>[a,item[b]])))
+        //     console.log(resData,'data))))))______------')
+        //     return  {'res':true,'count':res.data.rows,'data':resData}
+        // }else{
+        //     return {'res':false,'msg':res.data.desc,'code':res.data.code}
+        // }
     } catch (err) {
         if (err.response){
             return {'res':false,'msg':err.response.data.desc,'code':err.response.data.code}

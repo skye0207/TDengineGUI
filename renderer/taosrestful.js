@@ -19,7 +19,7 @@ module.exports = class TaosRestful {
             },
             timeout: this.timeout
         })
-
+console.log(res,'---------')
         if (res.data.status == 'succ'){
             // console.log(res.data.data)
             // console.log(res.data.rows)
