@@ -1,11 +1,12 @@
 const axios = require('axios')
+const { formatResult } = require('./versionAdapter')
 
 module.exports = {
     async sendRequest(sqlStr, payload) {
         // console.log(sqlStr)
         try {
             if (!payload.timeout) {
-                payload.timeout = 2000;
+                payload.timeout = 10000;
             }
             let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
                 auth: {
@@ -14,6 +15,9 @@ module.exports = {
                 },
                 timeout: payload.timeout
             })
+
+            res = formatResult(res, sqlStr)
+
             if (res.data.status === 'succ') {
                 // console.log(res.data.data)
                 // console.log(res.data.rows)
