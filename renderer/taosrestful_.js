@@ -11,11 +11,8 @@ module.exports = {
             },
             timeout: payload.timeout
         })
-        if (res.data.status == 'succ'){
-            // console.log(res.data.data)
-            // console.log(res.data.rows)
-            // console.log(res.data.head)
-            let head  = res.data.head
+        if (res.statusText == 'OK'){
+            let head  = res.data.column_meta.map(item => item[0])
             let resData = res.data.data.map(item => Object.fromEntries(head.map((a,b)=>[a,item[b]])))
             return  {'res':true,'count':res.data.rows,'data':resData}
         }else{
