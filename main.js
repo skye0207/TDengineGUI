@@ -10,6 +10,8 @@ function createWindow () {
   })
 
   win.loadFile('./renderer/index.html')
+
+  // win.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)

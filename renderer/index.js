@@ -15,13 +15,13 @@ new Vue({
         }
         TaosRestful.getVersion(payload).then(data => {
           links[i].version = data
-          this.$data.links =links 
+          this.$data.links =links
         })
       }
-        
+
     },
     data: function() {
-      return { 
+      return {
         dbInfo:'',
         consoleResult:'',
         loadingLinks: false,
@@ -37,15 +37,15 @@ new Vue({
         activeTab:"1",
 
         surperTableFilterCopy:{},
-        
+
         surperTableFilter:{
           fields:[],
           surperDateRange:[],
           surperTSearchText: "",
           surperTSearchColumn: "",
         },
-        
-        tableFilterCopy:{}, 
+
+        tableFilterCopy:{},
         tableFilter:{
           fields:[],
           dateRange:[],
@@ -57,7 +57,7 @@ new Vue({
 
         tableFilterDialog:false,
         surperTableFilterDialog:false,
-        
+
         surperTables: [], //超级表list
         surperTableData: [],
         surperTableName: "",
@@ -135,7 +135,7 @@ new Vue({
           password:""
         }
       },
-      confirmAddLink(event) {    
+      confirmAddLink(event) {
         //新建连接，先连接，如果成功，将payload+name记入本地
         //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
         let payload = {
@@ -151,10 +151,10 @@ new Vue({
               TaosRestful.getVersion(payload).then(_data => {
                 //连接成功，保存到本地
                 storage.AddALink({
-                  name: this.linkForm.name, 
-                  host: this.linkForm.host, 
-                  port: this.linkForm.port, 
-                  user: this.linkForm.user, 
+                  name: this.linkForm.name,
+                  host: this.linkForm.host,
+                  port: this.linkForm.port,
+                  user: this.linkForm.user,
                   password: this.linkForm.password,
                   version: _data
                 })
@@ -172,7 +172,7 @@ new Vue({
                 //更新连接列表
                 this.links = storage.getLinks()
               })
-             
+
             } else {
               //连接失败
               this.$message({
@@ -181,10 +181,10 @@ new Vue({
                 duration:1000
               });
             }
-            
+
         }
         )
-       
+
       },
       deleteLink(key, linkName){
         this.$confirm('确认删除连接' + linkName + "吗？")
@@ -282,7 +282,7 @@ new Vue({
                 type: 'error',
                 duration:1000
               });
-              return 
+              return
             }
           }
           TaosRestful.createDatabase(this.addDBname, payload,safe=true,keep= this.addDBkeep,update=this.addDBupdate,comp=this.addDBcomp, replica=this.addDBreplica,quorum=this.addDBquorum,blocks=this.addDBblocks).then(data => {
@@ -378,14 +378,14 @@ new Vue({
         })
         return info
       },
-      alartDB(link,dbName){        
+      alartDB(link,dbName){
         //切换数据库前先清空表
         this.dbInfo=this.makeDbInfo(link.dbs,dbName)
-        this.surperTables = []  
+        this.surperTables = []
         this.clearSurperTable()
         this.tables = []
         this.clearTable()
-      
+
         //记录进入的数据库
         this.theLink = link
         this.theDB = dbName
@@ -397,7 +397,7 @@ new Vue({
       },
       searchSurperTList(){
         this.SuperTdialog = false
-        this.surperTables = []  
+        this.surperTables = []
         this.clearSurperTable()
         let payload = {
           ip:this.theLink.host,
@@ -425,11 +425,11 @@ new Vue({
           }
           this.SuperTdialogText = ""
           this.loadingSurperList = false
-        }) 
+        })
 
       },
       freshSurperTList(){
-        this.surperTables = []  
+        this.surperTables = []
         this.clearSurperTable()
         this.freshSurperTables()
       },
@@ -498,10 +498,10 @@ new Vue({
       },
       freshSurperTables(){
         //清理超级表列表
-        this.surperTables = []  
+        this.surperTables = []
         //清理选中的超级表和具体数据
         this.clearSurperTable()
-        
+
         let payload = {
           ip:this.theLink.host,
           port:this.theLink.port,
@@ -526,7 +526,7 @@ new Vue({
             });
           }
           this.loadingSurperList = false
-        }) 
+        })
       },
       freshTables(){
         //清理表列表
@@ -576,7 +576,7 @@ new Vue({
           case "4":
             //数据库属性
             break;
-     } 
+     }
       },
       openSurperTableFilterD(){
         this.surperTableFilterDialog = true
@@ -622,7 +622,7 @@ new Vue({
           } else {
             this.surperWhere =this.surperTableFilter.surperTSearchColumn + " = '" + surperTSearchText +"'"
           }
-          
+
           this.selectSurperData(false)
         } else {
           this.surperWhere = ""
@@ -643,7 +643,7 @@ new Vue({
           } else {
             this.tableWhere =this.tableFilter.tableSearchColumn + " = '" + tableSearchText +"'"
           }
-          
+
           this.selectTData(false)
         } else {
           this.tableWhere = ""
@@ -792,14 +792,14 @@ new Vue({
       handleClickSurperT(val) {
         if(val){
           this.clearSurperTable()
-          this.surperTableName = val.name
+          this.surperTableName = val.name ? val.name : val.stable_name
           this.selectSurperData(true)
         }
-      },   
+      },
       handleClickT(val) {
         if(val){
           this.clearTable()
-          this.tableName = val.table_name   
+          this.tableName = val.name ? val.name : val.table_name
           this.selectTData(true)
         }
       },
@@ -813,7 +813,8 @@ new Vue({
         console.log(val)
       },
       deleteSurperT(val) {
-        this.$confirm('确认删除超级表' + val + "吗？")
+        let tableName = val.name ? val.name : val.stable_name
+        this.$confirm('确认删除超级表' + tableName + "吗？")
         .then(_ => {
           let payload = {
             ip:this.theLink.host,
@@ -824,7 +825,7 @@ new Vue({
           this.loadingSurperList = true
 
           //TODO没测试过
-          TaosRestful.dropTable(val, this.theDB, payload).then(data => {
+          TaosRestful.dropTable(tableName, this.theDB, payload).then(data => {
 
             if(data.res){
               //成功
@@ -843,7 +844,7 @@ new Vue({
             this.loadingSurperList = false
             this.freshSurperTables()
           })
-          
+
         })
         .catch(_ => {
           this.$message({
@@ -857,7 +858,8 @@ new Vue({
         console.log(val)
       },
       deleteT(val) {
-        this.$confirm('确认删除表' + val + "吗？")
+        let tableName = val.name ? val.name : val.table_name
+        this.$confirm('确认删除表' + tableName + "吗？")
         .then(_ => {
           let payload = {
             ip:this.theLink.host,
@@ -868,7 +870,7 @@ new Vue({
           this.loadingTableList = true
 
           //TODO没测试过
-          TaosRestful.dropTable(val, this.theDB, payload).then(data => {
+          TaosRestful.dropTable(tableName, this.theDB, payload).then(data => {
 
             if(data.res){
               //成功
@@ -887,7 +889,7 @@ new Vue({
             this.loadingTableList = false
             this.freshTables()
           })
-          
+
         })
         .catch(_ => {
           this.$message({
@@ -924,7 +926,7 @@ new Vue({
               duration:1000
             });
           }
-          
+
         })
       },
       closeSuperTdialog(){
@@ -952,10 +954,9 @@ new Vue({
             return this.tableLabelItems.fields? this.tableLabelItems.fields.indexOf(item) == -1: false;
         })
         this.tableFilter.fields = newFields
-      }  
-   
+      }
+
     }
   })
 
 
-  

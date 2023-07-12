@@ -19,7 +19,7 @@
         <div v-loading="loadingLinks">
           <el-row>
             <el-button class="linkBtn" @click="addLinkDialog = true" size="small" type="primary" plain>新建连接</el-button>
-          </el-row>   
+          </el-row>
           <el-menu class="menu"  @open="freshDB" :unique-opened="true">
             <el-submenu :index="String(index)" :key="index" v-for="(link, index) in links">
               <template slot="title">
@@ -37,10 +37,10 @@
                 <img class="icon111" @click.stop="deleteDB(link, db.name, index)"  src="./img/delete.png">
               </el-menu-item>
             </el-submenu>
-            
+
           </el-menu>
         </div>
-        
+
       </el-drawer>
       <!-- 新建连接的弹窗 -->
 
@@ -115,7 +115,7 @@
           <el-button type="primary" @click="postaddDB" size="medium">确 定</el-button>
         </div>
       </el-dialog>
-      
+
       <el-container class="main">
         <el-container class="mainContent">
           <el-tabs v-model="activeTab" type="border-card" class="mainTab"  @tab-click="handleSwichTab">
@@ -133,7 +133,7 @@
                     <el-table-column
                       label="超级表名"
                       width="180">
-                      <template slot="header" slot-scope="scope">   
+                      <template slot="header" slot-scope="scope">
                         <span>超级表名</span>
                         <div class="iconWrapper">
                           <div class="iconWrapper_" @click.stop="SuperTdialog=true">
@@ -148,13 +148,13 @@
                       </template>
                       <template slot-scope="scope">
                         <img class="icon1" src="./img/file.png">
-                        <span class="surperTables">{{ scope.row.name }}</span>
+                        <span class="surperTables">{{ scope.row.name || scope.row.stable_name}}</span>
                         <div class="iconWrapper2">
                           <!-- <img class="icon1" @click="editSurperT(scope.row.name)" src="./img/edit.png"> -->
-                          <img class="icon1" @click.stop="deleteSurperT(scope.row.name)" src="./img/delete.png">
+                          <img class="icon1" @click.stop="deleteSurperT(scope.row)" src="./img/delete.png">
                         </div>
                       </template>
-                      
+
                     </el-table-column>
                     </el-table>
                     <el-dialog
@@ -179,7 +179,7 @@
                     <el-dialog :close-on-click-modal="false" :before-close="concelSurperTableFilter" title="筛选条件" :visible.sync="surperTableFilterDialog">
                       <el-form  :model="surperTableFilter" label-width="80px">
                           <el-form-item label="数据项" >
-                            <el-checkbox-group 
+                            <el-checkbox-group
                               v-model="surperTableFilter.fields">
                               <el-row class="btnGroup">
                                 <el-button-group>
@@ -212,7 +212,7 @@
                             inactive-text="时间倒序">
                           </el-switch>
 
-                        </el-form>  
+                        </el-form>
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelSurperTableFilter" size="small">取消</el-button>
                           <el-button @click="postSurperTableFilter" size="small">设置</el-button>
@@ -255,7 +255,7 @@
                         <el-button @click="selectSurperData(false, false)" size="small" style="width: 100%" icon="el-icon-refresh">数据刷新</el-button>
                       </el-col>
                     </el-row>
-                    
+
                     <el-table
                       size="mini"
                       :data="surperTableData"
@@ -288,7 +288,7 @@
                         :total="totalSurperTable">
                       </el-pagination>
                     </div>
-                  </div>         
+                  </div>
                 </el-main>
               </el-container>
             </el-tab-pane>
@@ -306,9 +306,9 @@
                       <el-table-column
                         label="表名"
                         width="180">
-                        <template slot="header" slot-scope="scope">   
+                        <template slot="header" slot-scope="scope">
                           <span>表名</span>
-                          <div class="iconWrapper"> 
+                          <div class="iconWrapper">
                             <div class="iconWrapper_ " @click="Tdialog=true">
                               <img class="icon1" v-if="searchIcon" @mouseenter="searchIcon = false" src="./img/search_.png">
                               <img class="icon1" v-else src="./img/search.png" @mouseleave="searchIcon = true">
@@ -321,13 +321,13 @@
                         </template>
                         <template slot-scope="scope">
                           <img class="icon1" src="./img/file.png">
-                          <span  class="surperTables">{{ scope.row.table_name }}</span>
+                          <span  class="surperTables">{{ scope.row.table_name || scope.row.name}}</span>
                           <div class="iconWrapper2">
                             <!-- <img class="icon1" @click="editT" src="./img/edit.png"> -->
-                            <img class="icon1" @click.stop="deleteT(scope.row.table_name)" src="./img/delete.png">
+                            <img class="icon1" @click.stop="deleteT(scope.row)" src="./img/delete.png">
                           </div>
                         </template>
-                        
+
                       </el-table-column>
                     </el-table>
                     <el-dialog
@@ -346,12 +346,12 @@
                     </el-dialog>
                   </div>
                 </el-aside>
-                <el-main>      
+                <el-main>
                   <div v-loading="loadingTable">
                     <el-dialog :close-on-click-modal="false" :before-close="concelTableFilter"	title="筛选条件" :visible.sync="tableFilterDialog">
                       <el-form  :model="tableFilter" label-width="80px">
                           <el-form-item label="数据项" >
-                            <el-checkbox-group 
+                            <el-checkbox-group
                               v-model="tableFilter.fields">
                               <el-row class="btnGroup">
                                 <el-button-group>
@@ -367,7 +367,7 @@
                             </el-checkbox-group>
                           </el-form-item>
                           <el-form-item label="每页数目">
-                            
+
                             <el-radio-group v-model="eachPageTable">
                               <el-row class="checkboxGroup2">
                                 <el-radio :label="10">10</el-radio>
@@ -384,7 +384,7 @@
                           active-text="时间倒序"
                           inactive-text="时间正序">
                         </el-switch>
-                        </el-form>  
+                        </el-form>
                         <span slot="footer" class="dialog-footer">
                           <el-button @click="concelTableFilter" size="small">取消</el-button>
                           <el-button @click="postTableFilter" size="small">设置</el-button>
@@ -474,26 +474,26 @@
             </el-tab-pane>
             <el-tab-pane label="当前数据库属性" name="4"><p v-html='dbInfo'></p></el-tab-pane>
           </el-tabs>
-          
+
         </el-container>
-         <el-footer> 
-          
+         <el-footer>
+
            <el-button class="switchBtn" @click="drawer = true" type="text" size="small">
              <img class="icon" src="./img/switch.png" />
             切换</el-button>
             <div class="footTextWrapper">
 
             </div>
-            <div class="footText">当前连接:</div> 
-            <div class="footText greyText">{{theLink.name}}</div> 
-            <div class="footText">主机:</div> 
-            <div class="footText greyText">{{theLink.host}}</div> 
-            <div class="footText">端口:</div> 
-            <div class="footText greyText">{{theLink.port}}</div> 
-            <div class="footText">用户名:</div> 
-            <div class="footText greyText">{{theLink.user}}</div> 
-            <div class="footText">数据库:</div> 
-            <div class="footText greyText">{{theDB}}</div> 
+            <div class="footText">当前连接:</div>
+            <div class="footText greyText">{{theLink.name}}</div>
+            <div class="footText">主机:</div>
+            <div class="footText greyText">{{theLink.host}}</div>
+            <div class="footText">端口:</div>
+            <div class="footText greyText">{{theLink.port}}</div>
+            <div class="footText">用户名:</div>
+            <div class="footText greyText">{{theLink.user}}</div>
+            <div class="footText">数据库:</div>
+            <div class="footText greyText">{{theDB}}</div>
         </el-footer>
       </el-container>
 
