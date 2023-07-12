@@ -3,7 +3,7 @@ const axios = require('axios')
 module.exports = {
    async sendRequest(sqlStr, payload){
     // console.log(sqlStr)
-    try {   
+    try {
         let res = await axios.post(`http://${payload.ip}:${payload.port}/rest/sql`, sqlStr, {
             auth: {
             username: payload.user,
@@ -12,11 +12,24 @@ module.exports = {
             timeout: payload.timeout
         })
         if (res.data.status == 'succ'){
-            // console.log(res.data.data)
-            // console.log(res.data.rows)
-            // console.log(res.data.head)
+            // tdengine server version 2.4+
             let head  = res.data.head
             let resData = res.data.data.map(item => Object.fromEntries(head.map((a,b)=>[a,item[b]])))
+            return  {'res':true,'count':res.data.rows,'data':resData}
+        }else if (res.data.code == 0){
+            // tdengine server version 3.0+
+            let columnMeta = res.data.column_meta;
+            let resData = new Array()
+            for (let i = 0; i < res.data.data.length; i++) {
+                let curData = res.data.data[i]
+                let obj = new Object()
+                for (let j = 0; j < columnMeta.length; j++) {
+                    let fieldName = columnMeta[j][0]
+                    let fieldValue = curData[j];
+                    obj[fieldName] = fieldValue
+                }
+                resData.push(obj)
+            }
             return  {'res':true,'count':res.data.rows,'data':resData}
         }else{
             return {'res':false,'msg':res.data.desc,'code':res.data.code}
@@ -27,7 +40,7 @@ module.exports = {
         }else{
             return {'res':false,'msg':'连接错误','code':-1}
         }
-        
+
     }
 
    },
@@ -46,7 +59,7 @@ module.exports = {
         )
    },
    getVersion(payload){
-        //获取服务器版本    
+        //获取服务器版本
         return this.sendRequest('SELECT SERVER_VERSION()', payload).then(a =>
             {
                 if (a.res === false){
@@ -226,7 +239,7 @@ module.exports = {
                 return new Promise((resolve, reject)=>{resolve(0)})
             }
         })
-    },  
+    },
    rawSql(sqlStr,payload){
         return this.sendRequest(sqlStr,payload)
    },
