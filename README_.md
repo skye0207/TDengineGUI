@@ -26,49 +26,49 @@
 
 - 打开软件后，界面左侧会显示需要管理的数据库服务器列表和服务器中数据库列表，同时显示数据库服务器的版本号。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/1.png)
+![Image text](_img/1.png)
 
 - 可以通过“新建连接”按钮，添加新的服务器进行管理。需要提供数据库服务器的ip地址、restful服务的端口号（默认为6041）、连接服务器的用户名和密码（默认为root:taosdata）
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/2.png)
+![Image text](_img/2.png)
 
 - 可以通过点击数据库后的删除图标，进行删除数据库操作。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/3.png)
+![Image text](_img/3.png)
 
 - 可以通过点击添加数据库图标，进行添加数据库操作。可以在添加时选择数据库属性(具体属性含义请参考[tdengine官方文档](https://www.taosdata.com/cn/documentation/taos-sql#management))
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/5.png)
+![Image text](_img/5.png)
 
 - 可以通过点击服务器连接后的删除图标，进行删除数据库连接操作。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/6.png)
+![Image text](_img/6.png)
 
 - 选择要操作的数据库后，即可进入当前数据库操作界面。可以通过点击“切换”按钮调出数据库导航栏，切换要操作的数据库。当前数据库操作界面中分 超级表、表、控制台、数据库属性四个标签页。每个标签页都针对当前数据库进行显示与操作。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/7.png)
+![Image text](_img/7.png)
 
 - 超级表（表）标签页中，左侧为超级表（表）的列表，可以进行删除与检索操作（添加、修改等操作后续版本将提供，当前版本如需增加数据表或者插入数据请使用控制台输入命令完成）。左侧则显示当前数据表的数据。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/8.png)
+![Image text](_img/8.png)
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/11.png)
+![Image text](_img/11.png)
 
 - 可以对表数据进行时间段选择。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/9.png)
+![Image text](_img/9.png)
 
 - 可以对表数据进行时间字段过滤、排序、分页等操作。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/10.png)
+![Image text](_img/10.png)
 
 - 控制台中可以输入sql命令运行，并显示restful接口原始返回结果。控制台中输入的命令默认针对当前数据库进行操作，一般情况下不需要在表名称前附加数据库名称。但也可以通过“数据库名.表名”的方式操作其他数据库中的表。（结果显示方式，以后版本将改进）
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/12.png)
+![Image text](_img/12.png)
 
 - 数据库属性显示当前数据库的一些基础属性，后期版本将加入属性修改功能。
 
-![Image text](https://github.com/kangaroo1122/TDengineGUI/blob/main/_img/14.png)
+![Image text](_img/14.png)
 
 现有bug:
 - [x] 数据表控件高度需要根据每页条目数量自动调整，现在每页20条时需要上下滚动。
