@@ -1,6 +1,6 @@
 {
   "name": "TDengineGUI",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "A simple TDengine DeskTop Manager",
   "main": "main.js",
   "scripts": {
@@ -32,7 +32,14 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/logo.icns"
+      "icon": "build/icons/logo.icns",
+      "target": {
+        "target": "default",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      }
     },
     "linux": {
       "icon": "build/icons/logo.icns"
@@ -50,12 +57,13 @@
   ],
   "author": "skye0207",
   "devDependencies": {
-    "electron-builder": "^22.9.1",
-    "electron": "^11.1.1"
+    "electron": "^11.5.0",
+    "electron-builder": "^22.9.1"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.0.1",
     "element-ui": "^2.15.0",
     "vue": "^2.6.12"
   },

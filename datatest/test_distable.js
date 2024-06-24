@@ -1,7 +1,7 @@
 'use strict'
 
 
-var TaosRestful = require('../renderer/taosrestful.js')
+var TaosRestful = require('../renderer/js/taosrestful.js')
 
 var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
 
