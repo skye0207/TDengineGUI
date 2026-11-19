@@ -7,6 +7,7 @@
 - Link to TDengine, create and drop databases
 - show tables and surpertables, select data.
 - execute the SQL statements using a simple console.
+- Connect to Apache IoTDB 2.x in Table or Tree model.
 
 ## Downloads
 
@@ -34,6 +35,16 @@ npm install
 # serve
 npm run start
 ```
+
+## Apache IoTDB 2.x
+
+Choose **Apache IoTDB** in the new connection dialog. Configure the host, REST port (default `18080`), username, password, REST protocol, and Table or Tree model. The REST service must be enabled and reachable; use HTTPS when configured. Tree databases use a full `root...` path, such as `root.factory`, while Table databases use a plain database name.
+
+The navigation panel can list, create, and delete databases. After selecting a database, the browser lists tables in Table mode or devices in Tree mode; selecting an object shows its schema and timestamp-ordered data pages, with a time filter. Use the SQL console to query or execute SQL in the selected database. The data browser fetches a maximum of 20 rows at a time; console queries are limited to 1000 rows and 8 MiB, and larger results may need narrower SQL filters.
+
+IoTDB connection details and passwords are kept for the current app session only; profiles do not store IoTDB passwords on disk. Re-enter the password the next time the app is launched.
+
+Run offline REST and pagination tests with `npm run test:iotdb`. The opt-in `npm run test:iotdb:live` test creates and drops temporary databases in both models. Configure `IOTDB_REST_URL`, `IOTDB_USER`, and `IOTDB_PASSWORD` first, and point it only at a test IoTDB 2.x instance.
 
 ## Build Package
 ```bash

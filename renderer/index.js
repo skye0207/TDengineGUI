@@ -1,12 +1,20 @@
 const TaosRestful = require('./taosrestful_.js')
 const storage = require('./localDataStore.js')
-const { TouchBarScrubber } = require('electron')
+const { IoTDB } = require('./iotdb')
+const IoTDBBrowser = require('./iotdb-browser')
+
+function newLinkForm() {
+  return { name: '', host: '', port: '6041', user: '', password: '', backend: 'tdengine', scheme: 'http', model: 'table' }
+}
 
 new Vue({
     el: '#app',
+    components: { IotdbBrowser: IoTDBBrowser },
     mounted: function () {
       let links = storage.getLinks()
+      this.links = links
       for(let i = 0,len=links.length; i < len; i++) {
+        if (links[i].backend === 'iotdb') continue
         let payload = {
           ip:links[i].host,
           port:links[i].port,
@@ -15,7 +23,6 @@ new Vue({
         }
         TaosRestful.getVersion(payload).then(data => {
           links[i].version = data
-          this.$data.links =links 
         })
       }
         
@@ -27,13 +34,7 @@ new Vue({
         loadingLinks: false,
         drawer: true,
         addLinkDialog: false,
-        linkForm: {
-          name:"",
-          host:"",
-          port:"",
-          user:"",
-          password:"",
-        },
+        linkForm: newLinkForm(),
         activeTab:"1",
 
         surperTableFilterCopy:{},
@@ -113,6 +114,41 @@ new Vue({
       }
     },
     methods: {
+      profileKey: storage.linkKey,
+      async iotdbClient(link) {
+        if (link.password == null) {
+          const result = await this.$prompt('请输入 ' + link.name + ' 的 IoTDB 密码', '连接', { inputType: 'password' })
+          this.$set(link, 'password', result.value)
+          storage.rememberPassword(link, result.value)
+        }
+        const client = new IoTDB(link)
+        if (!link.version) this.$set(link, 'version', await client.getVersion())
+        return client
+      },
+      async iotdbAction(link, action) {
+        this.loadingLinks = true
+        try { await action(await this.iotdbClient(link)) }
+        catch (err) {
+          if (err && err.message) {
+            if (/HTTP 401|IoTDB 600:/.test(err.message)) {
+              storage.rememberPassword(link, undefined)
+              this.$set(link, 'password', undefined)
+            }
+            this.$message.error(err.message)
+          }
+        } finally { this.loadingLinks = false }
+      },
+      async addIoTDBLink() {
+        const link = { ...this.linkForm }
+        try {
+          const client = new IoTDB(link)
+          await client.databases()
+          link.version = await client.getVersion()
+          storage.AddALink(link)
+          this.cancelAddLink()
+          this.links = storage.getLinks()
+        } catch (err) { this.$message.error(err.message) }
+      },
       beforeClosedrawer(){
         if(this.theDB){
           this.drawer = false
@@ -127,15 +163,10 @@ new Vue({
       cancelAddLink() {
         this.addLinkDialog = false
         //清空表单
-        this.linkForm={
-          name:"",
-          host:"",
-          port:"",
-          user:"",
-          password:""
-        }
+        this.linkForm = newLinkForm()
       },
       confirmAddLink(event) {    
+        if (this.linkForm.backend === 'iotdb') return this.addIoTDBLink()
         //新建连接，先连接，如果成功，将payload+name记入本地
         //var tr = new TaosRestful("121.36.56.117","6041","root","msl110918")
         let payload = {
@@ -161,13 +192,7 @@ new Vue({
                 //关闭新建连接的弹窗
                 this.addLinkDialog = false
                 //清空表单
-                this.linkForm={
-                  name:"",
-                  host:"",
-                  port:"",
-                  user:"",
-                  password:"",
-                }
+                this.linkForm = newLinkForm()
 
                 //更新连接列表
                 this.links = storage.getLinks()
@@ -207,6 +232,9 @@ new Vue({
       },
       freshDB(key){
         let theLink = this.links[key]
+        if (theLink.backend === 'iotdb') {
+          return this.iotdbAction(theLink, async client => this.$set(theLink, 'dbs', await client.databases()))
+        }
         let payload = {
           ip:theLink.host,
           port:theLink.port,
@@ -243,6 +271,7 @@ new Vue({
               duration:1000
             });
             this.linkForm = {
+              ...newLinkForm(),
               name: theLink.name,
               host: theLink.host,
               port: theLink.port,
@@ -268,6 +297,13 @@ new Vue({
       postaddDB(){
         let key = this.addDBDialogLinkKey
         let theLink = this.links[key]
+        if (theLink.backend === 'iotdb') {
+          return this.iotdbAction(theLink, async client => {
+            await client.databaseDDL('CREATE', this.addDBname.trim())
+            this.addDBDialog = false
+            this.$set(theLink, 'dbs', await client.databases())
+          })
+        }
         let payload = {
           ip:theLink.host,
           port:theLink.port,
@@ -315,6 +351,15 @@ new Vue({
       deleteDB(link, dbName, key){
         this.$confirm('确认删除数据库' + dbName + "吗？")
         .then(_ => {
+          if (link.backend === 'iotdb') {
+            return this.iotdbAction(link, async client => {
+              await client.databaseDDL('DROP', dbName)
+              if (this.theDB === dbName && this.profileKey(this.theLink) === this.profileKey(link)) {
+                this.theDB = ''; this.theLink = {}; this.activeTab = '1'
+              }
+              this.$set(link, 'dbs', await client.databases())
+            })
+          }
           let payload = {
             ip:link.host,
             port:link.port,
@@ -379,6 +424,12 @@ new Vue({
         return info
       },
       alartDB(link,dbName){        
+        if (link.backend === 'iotdb') {
+          this.theLink = link
+          this.theDB = dbName
+          this.drawer = false
+          return
+        }
         //切换数据库前先清空表
         this.dbInfo=this.makeDbInfo(link.dbs,dbName)
         this.surperTables = []  
@@ -956,6 +1007,3 @@ new Vue({
    
     }
   })
-
-
-  

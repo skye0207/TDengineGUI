@@ -24,6 +24,7 @@
             <el-submenu :index="String(index)" :key="index" v-for="(link, index) in links">
               <template slot="title">
                 <span>{{link.name}}</span>
+                <small v-if="link.backend === 'iotdb'">IoTDB · {{link.model}}</small>
                 <el-tag type="success" size="mini" v-if="link.version">{{link.version}}</el-tag>
                 <div class="iconWrapper3">
                   <img @click.stop="addDB(index)" class="icon1" src="./img/add.png">
@@ -46,6 +47,20 @@
 
       <el-dialog :close-on-click-modal="false" :before-close="cancelAddLink" :visible.sync="addLinkDialog" title="新建连接">
         <el-form :model="linkForm"  :ref="linkForm" class="linkformstyle" label-width="80px">
+          <el-form-item label="数据库">
+            <el-select v-model="linkForm.backend" @change="linkForm.port = linkForm.backend === 'iotdb' ? '18080' : '6041'">
+              <el-option value="tdengine" label="TDengine"></el-option>
+              <el-option value="iotdb" label="Apache IoTDB"></el-option>
+            </el-select>
+          </el-form-item>
+          <template v-if="linkForm.backend === 'iotdb'">
+            <el-form-item label="模型"><el-radio-group v-model="linkForm.model">
+              <el-radio label="table">Table</el-radio><el-radio label="tree">Tree</el-radio>
+            </el-radio-group></el-form-item>
+            <el-form-item label="协议"><el-radio-group v-model="linkForm.scheme">
+              <el-radio label="http">HTTP</el-radio><el-radio label="https">HTTPS</el-radio>
+            </el-radio-group></el-form-item>
+          </template>
           <el-form-item label="名称" prop="name">
             <el-input v-model="linkForm.name"></el-input>
           </el-form-item>
@@ -73,8 +88,9 @@
           <el-form-item label="名称" :rules="[
           { required: true, message: '名称不能为空'}
         ]">
-            <el-input v-model="addDBname" autocomplete="off"></el-input>
+            <el-input v-model="addDBname" autocomplete="off" :placeholder="links[addDBDialogLinkKey] && links[addDBDialogLinkKey].model === 'tree' ? 'root.example' : ''"></el-input>
           </el-form-item>
+          <template v-if="links[addDBDialogLinkKey] && links[addDBDialogLinkKey].backend !== 'iotdb'">
           <el-form-item label="comp" label-width="80px">
             <el-select v-model="addDBcomp" placeholder="文件压缩度">
               <el-option label="0" value="0"></el-option>
@@ -109,6 +125,7 @@
           <el-form-item label="blocks" label-width="80px">
             <el-input-number v-model="addDBblocks" :min="3"	:max="1000" controls-position="right"></el-input-number>
           </el-form-item>
+          </template>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addDBDialog = false" size="medium">取 消</el-button>
@@ -118,7 +135,8 @@
       
       <el-container class="main">
         <el-container class="mainContent">
-          <el-tabs v-model="activeTab" type="border-card" class="mainTab"  @tab-click="handleSwichTab">
+          <iotdb-browser v-if="theLink.backend === 'iotdb'" :link="theLink" :database="theDB" :key="profileKey(theLink) + theDB"></iotdb-browser>
+          <el-tabs v-else v-model="activeTab" type="border-card" class="mainTab"  @tab-click="handleSwichTab">
             <el-tab-pane label="超级表" class="tablePage" name="1">
               <el-container class="tableWrapper">
                 <el-aside class="mainAside" width="200px">
