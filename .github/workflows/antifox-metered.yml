@@ -1,0 +1,20 @@
+name: antifox-metered
+on:
+  push:
+    branches: [antifox-6702-metered]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  meter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: metered-proof
+        run: |
+          echo "antifox-metered-run-ok"
+          date -u
+          echo "runner=$RUNNER_NAME os=$RUNNER_OS arch=$RUNNER_ARCH"
+          echo "GITHUB_TOKEN capability check:"
+          curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/installation/repositories | head -c 300
+          echo
+          sleep 10
