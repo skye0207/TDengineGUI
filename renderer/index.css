@@ -32,6 +32,13 @@ html, body, div {
 .mainContent{
     height: 100%;
 }
+.iotdb-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 12px 0;
+}
+.iotdb-browser .el-select { min-width: 260px; }
 
 .tablePage{
     height: 90%;

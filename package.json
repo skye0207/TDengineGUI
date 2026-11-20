@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "test:iotdb": "node --test datatest/iotdb.test.js",
+    "test:iotdb:live": "node datatest/iotdb-live.js"
   },
   "build": {
     "appId": "com.skype.tdenginegui",
@@ -57,7 +59,8 @@
     "axios": "^0.21.1",
     "electron-squirrel-startup": "^1.0.0",
     "element-ui": "^2.15.0",
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "json-bigint": "^1.0.0"
   },
   "browserslist": [
     "> 1%",

@@ -8,6 +8,7 @@
 - 数据库添加删除操作，显示数据库属性。
 - 显示数据库中超级表和表信息，删除超级表与表功能。
 - 显示超级表和表数据功能，提供分页、时间段检索、字段过滤、排序等功能。
+- 支持连接 Apache IoTDB 2.x，可选择 Table 或 Tree 模型。
 
 ## 如何获取
 
@@ -21,6 +22,16 @@
 - 安装依赖: npm install
 - 启动开发版本: npm run start
 - 生成桌面应用（可选）: npm run build （生成在dist文件夹下）
+
+## Apache IoTDB 2.x
+
+在“新建连接”中选择“Apache IoTDB”，填写主机、REST 服务端口（默认 `18080`）、用户名、密码、REST 协议以及 Table 或 Tree 模型。服务器需要启用并开放 REST 服务；服务器配置了 HTTPS 时，请使用 HTTPS。Tree 模型的数据库名是完整 `root...` 路径，例如 `root.factory`；Table 模型的数据库名是普通名称。
+
+通过导航面板刷新、创建或删除数据库。选择数据库后，Table 模型会列出表，Tree 模型会列出设备。选择表或设备可查看结构、按时间分页浏览数据，也可以设置时间范围。控制台针对已选数据库执行 SQL；每次查询最多返回 1000 行和 8 MiB，超出时可缩小 SQL 查询范围，数据浏览每次最多读取 20 行。
+
+IoTDB 连接资料中的密码仅保存在应用当前会话内，连接配置不会将密码写入磁盘。下次启动应用后，需重新输入密码。
+
+离线 REST 与分页测试使用 `npm run test:iotdb`。可选集成烟测 `npm run test:iotdb:live` 会在 Table 和 Tree 模型中创建并删除临时数据库。运行前设置 `IOTDB_REST_URL`、`IOTDB_USER` 和 `IOTDB_PASSWORD`，并确认连接的是测试 IoTDB 2.x 实例。
 
 ## 使用说明
 
